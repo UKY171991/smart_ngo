@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Campaign;
 use App\Models\News;
 use App\Models\Activity;
+use App\Models\Page;
 
 class PageController extends Controller
 {
@@ -45,16 +46,34 @@ class PageController extends Controller
 
     public function privacy()
     {
-        return view('pages.policy', ['title' => 'Privacy Policy']);
+        $page = Page::where('slug', 'privacy-policy')->where('is_active', true)->first();
+        if (!$page) {
+            return view('pages.policy', ['title' => 'Privacy Policy']);
+        }
+        return view('pages.dynamic', compact('page'));
     }
 
     public function terms()
     {
-        return view('pages.policy', ['title' => 'Terms of Service']);
+        $page = Page::where('slug', 'terms-of-service')->where('is_active', true)->first();
+        if (!$page) {
+            return view('pages.policy', ['title' => 'Terms of Service']);
+        }
+        return view('pages.dynamic', compact('page'));
     }
 
     public function cookies()
     {
-        return view('pages.policy', ['title' => 'Cookie Policy']);
+        $page = Page::where('slug', 'cookie-policy')->where('is_active', true)->first();
+        if (!$page) {
+            return view('pages.policy', ['title' => 'Cookie Policy']);
+        }
+        return view('pages.dynamic', compact('page'));
+    }
+
+    public function show($slug)
+    {
+        $page = Page::where('slug', $slug)->where('is_active', true)->firstOrFail();
+        return view('pages.dynamic', compact('page'));
     }
 }

@@ -16,6 +16,9 @@ class Event extends Model
         'fees',
         'max_participants',
         'image',
+        'meta_title',
+        'meta_description',
+        'meta_keywords',
     ];
 
     protected static function boot()

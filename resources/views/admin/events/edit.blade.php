@@ -10,7 +10,7 @@
                 <h5 class="fw-bold mb-0 text-primary">Edit: {{ $event->title }}</h5>
             </div>
             <div class="card-body p-4">
-                <form action="{{ route('admin.events.update', $event) }}" method="POST">
+                <form action="{{ route('admin.events.update', $event) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <div class="row g-4">
@@ -38,6 +38,36 @@
                             <label class="form-label fw-semibold">Max Participants (Optional)</label>
                             <input type="number" name="max_participants" class="form-control rounded-3" value="{{ $event->max_participants }}">
                         </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Event Image</label>
+                            @if($event->image)
+                                <div class="mb-3">
+                                    <img src="{{ Storage::url($event->image) }}" class="rounded shadow-sm" style="max-height: 150px;">
+                                </div>
+                            @endif
+                            <input type="file" name="image" class="form-control rounded-3" accept="image/*">
+                            <small class="text-muted">Recommended size: 800x500 pixels. Leave empty to keep current.</small>
+                        </div>
+
+                        <div class="col-12 mt-4 px-3 py-3 rounded-4 bg-light border-0">
+                            <h6 class="fw-bold mb-3 text-primary"><i class="fas fa-search me-2"></i> SEO Settings</h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Meta Title</label>
+                                    <input type="text" name="meta_title" class="form-control" value="{{ $event->meta_title }}" placeholder="SEO Title">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Meta Keywords</label>
+                                    <input type="text" name="meta_keywords" class="form-control" value="{{ $event->meta_keywords }}" placeholder="Keywords (comma separated)">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold">Meta Description</label>
+                                    <textarea name="meta_description" class="form-control" rows="2" placeholder="SEO Description">{{ $event->meta_description }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="col-12 mt-4 pt-2">
                             <hr>
                             <div class="d-flex gap-2">

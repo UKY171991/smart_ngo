@@ -23,7 +23,7 @@ class SettingServiceProvider extends ServiceProvider
     public function boot(): void
     {
         if (Schema::hasTable('settings')) {
-            $settings = Setting::pluck('value', 'key')->all();
+            $settings = Setting::pluck('value', 'setting_key')->all();
             View::share('siteSettings', $settings);
         }
     }

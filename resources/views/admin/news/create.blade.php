@@ -10,7 +10,7 @@
                 <h5 class="fw-bold mb-0 text-primary"><i class="fas fa-plus-circle me-2"></i> Compose Article</h5>
             </div>
             <div class="card-body p-4">
-                <form action="{{ route('admin.news.store') }}" method="POST">
+                <form action="{{ route('admin.news.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     
                     <div class="mb-4">
@@ -21,6 +21,32 @@
                     <div class="mb-4">
                         <label class="form-label fw-semibold">Content</label>
                         <textarea name="content" class="form-control" rows="10" placeholder="Write your news article here..." required></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Featured Image</label>
+                        <input type="file" name="image" class="form-control" accept="image/*">
+                        <small class="text-muted">Recommended size: 1200x600 pixels.</small>
+                    </div>
+
+                    <div class="card bg-light border-0 rounded-4 mb-4">
+                        <div class="card-body p-4">
+                            <h6 class="fw-bold mb-3 text-primary"><i class="fas fa-search me-2"></i> SEO Settings</h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Meta Title</label>
+                                    <input type="text" name="meta_title" class="form-control" placeholder="SEO Title">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Meta Keywords</label>
+                                    <input type="text" name="meta_keywords" class="form-control" placeholder="Keywords (comma separated)">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold">Meta Description</label>
+                                    <textarea name="meta_description" class="form-control" rows="2" placeholder="SEO Description"></textarea>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="mb-5">

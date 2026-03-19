@@ -2,48 +2,66 @@
 <html>
 <head>
     <style>
-        body { font-family: 'Helvetica', 'Arial', sans-serif; padding: 40px; color: #333; line-height: 1.6; }
-        .receipt-container { border: 1px solid #eee; padding: 30px; border-radius: 15px; }
-        .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; border-bottom: 3px solid #cc0000; padding-bottom: 20px; }
-        .ngo-info h1 { color: #cc0000; margin: 0; font-size: 24pt; font-weight: bold; }
-        .ngo-info p { margin: 2px 0; font-size: 10pt; color: #666; }
-        .receipt-details { text-align: right; }
-        .receipt-details h2 { margin: 0; color: #333; }
-        .content { margin-top: 30px; }
-        .donor-box { background: #f9f9f9; padding: 20px; border-radius: 10px; margin-bottom: 30px; }
-        .donor-box p { margin: 5px 0; }
-        .table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-        .table th { background: #cc0000; color: #fff; padding: 12px; text-align: left; }
-        .table td { padding: 15px; border-bottom: 1px solid #eee; }
-        .total-row td { font-weight: bold; font-size: 14pt; color: #cc0000; }
-        .qr-section { margin-top: 50px; border-top: 1px solid #eee; padding-top: 20px; display: flex; align-items: center; }
-        .qr-code { float: right; margin-left: 20px; }
-        .footer { margin-top: 100px; text-align: center; font-size: 9pt; color: #999; }
-        .signature-box { border-top: 1px solid #333; width: 150px; text-align: center; padding-top: 5px; font-weight: bold; }
+        body { font-family: 'Helvetica', 'Arial', sans-serif; padding: 30px; color: #333; line-height: 1.4; font-size: 8pt; }
+        .receipt-container { border: 2px solid #28a745; padding: 20px; padding-top: 80px; border-radius: 15px; background: #fff; position: relative; }
+        .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; border-bottom: 3px solid #28a745; padding-bottom: 10px; position: relative; }
+        .ngo-info { flex: 1; }
+        .ngo-info h1 { color: #28a745; margin: 0; font-size: 18pt; font-weight: bold; }
+        .ngo-info p { margin: 1px 0; font-size: 8pt; color: #666; }
+        .receipt-details { text-align: right; min-width: 180px; position: absolute; top: 20px; right: 20px; }
+        .receipt-details h2 { margin: 0; color: #333; font-size: 16pt; font-weight: bold; }
+        .qr-top-right { position: absolute; top: -60px; left: 50%; transform: translateX(-50%); text-align: center; width: 100px; z-index: 10; }
+        .qr-top-right img { border: 2px solid #28a745; border-radius: 8px; padding: 3px; background: white; width: 70px !important; height: 70px !important; }
+        .qr-top-right p { font-size: 6pt; text-align: center; margin-top: 2px; color: #28a745; font-weight: bold; line-height: 1.2; }
+        .content { margin-top: 20px; }
+        .donor-box { background: #f8f9fa; padding: 12px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid #28a745; }
+        .donor-box h3 { margin-top: 0; color: #28a745; font-size: 12pt; }
+        .donor-box p { margin: 2px 0; font-size: 8pt; }
+        .table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+        .table th { background: #28a745; color: #fff; padding: 8px; text-align: left; font-weight: bold; font-size: 9pt; }
+        .table td { padding: 8px; border-bottom: 1px solid #eee; font-size: 9pt; }
+        .total-row td { font-weight: bold; font-size: 12pt; color: #28a745; background: #f8f9fa; }
+        .amount-words { background: #fff3cd; padding: 8px; border-radius: 8px; border-left: 4px solid #ffc107; margin: 10px 0; font-style: italic; font-size: 8pt; }
+        .tax-benefit { background: #d1ecf1; padding: 8px; border-radius: 8px; border-left: 4px solid #17a2b8; margin: 10px 0; font-size: 8pt; }
+        .tax-benefit h4 { margin-top: 0; color: #17a2b8; font-size: 10pt; }
+        .footer { margin-top: 20px; text-align: center; font-size: 7pt; color: #999; border-top: 1px solid #eee; padding-top: 10px; }
+        .signature-box { border-top: 2px solid #333; width: 120px; text-align: center; padding-top: 5px; font-weight: bold; margin-top: 15px; font-size: 8pt; }
     </style>
 </head>
 <body>
     <div class="receipt-container">
         <div class="header">
             <div class="ngo-info">
-                <h1>SAMRAT FOUNDATION</h1>
-                <p>Registration No: NGO/DEL/2026/01</p>
-                <p>Address: 123, Vikas Marg, New Delhi - 110092</p>
-                <p>Email: contact@samratfoundation.in | Phone: +91 99999 99999</p>
+                <h1>SMART NGO</h1>
+                <p><strong>Registration No:</strong> NGO/DEL/2026/01</p>
+                <p><strong>Address:</strong> 123 NGO Street, City - 123456</p>
+                <p><strong>Email:</strong> info@smartngo.org | <strong>Phone:</strong> +91-9876543210</p>
+                <p><strong>Website:</strong> www.smartngo.org</p>
             </div>
             <div class="receipt-details">
                 <h2>DONATION RECEIPT</h2>
-                <p><strong>Receipt #:</strong> {{ $donation->receipt_number }}</p>
+                <p><strong>Receipt No:</strong> {{ $donation->receipt_number }}</p>
                 <p><strong>Date:</strong> {{ $donation->created_at->format('d M, Y') }}</p>
+                <p><strong>Status:</strong> <span style="color: #28a745; font-weight: bold;">COMPLETED</span></p>
             </div>
+        </div>
+
+        <div class="qr-top-right">
+            <img src="data:image/svg+xml;base64,{{ base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::size(70)->format('svg')->generate(url('/verify/donation/' . $donation->receipt_number))) }}" 
+                 alt="Verification QR Code" style="width: 70px; height: 70px;">
+            <p>SCAN TO VERIFY</p>
         </div>
 
         <div class="content">
             <div class="donor-box">
-                <p><strong>Donor Name:</strong> {{ $donation->donor_name }}</p>
-                <p><strong>Donor Email:</strong> {{ $donation->donor_email }}</p>
+                <h3 style="margin-top: 0; color: #28a745;">Donor Information</h3>
+                <p><strong>Name:</strong> {{ $donation->donor_name }}</p>
+                <p><strong>Email:</strong> {{ $donation->donor_email }}</p>
                 @if($donation->donor_phone)
-                    <p><strong>Donor Phone:</strong> {{ $donation->donor_phone }}</p>
+                    <p><strong>Phone:</strong> {{ $donation->donor_phone }}</p>
+                @endif
+                @if($donation->user)
+                    <p><strong>Member ID:</strong> #{{ str_pad($donation->user->id, 6, '0', STR_PAD_LEFT) }}</p>
                 @endif
             </div>
 
@@ -57,44 +75,43 @@
                 <tbody>
                     <tr>
                         <td>
-                            Donation for {{ $donation->campaign->title ?? 'General Fund' }}
-                            <br><small>Payment Method: {{ ucfirst($donation->payment_method) }}</small>
+                            <strong>{{ $donation->campaign->title ?? 'General Donation' }}</strong>
+                            <br><small style="color: #666;">Payment Method: {{ ucfirst($donation->payment_method) }}</small>
                         </td>
-                        <td style="text-align: right;">₹ {{ number_format($donation->amount, 2) }}</td>
+                        <td style="text-align: right; font-size: 16pt; font-weight: bold;">INR {{ number_format($donation->amount, 2) }}</td>
                     </tr>
                     <tr class="total-row">
-                        <td style="text-align: right;">TOTAL:</td>
-                        <td style="text-align: right;">₹ {{ number_format($donation->amount, 2) }}</td>
+                        <td style="text-align: right; font-size: 12pt; font-weight: bold;">TOTAL AMOUNT:</td>
+                        <td style="text-align: right; font-size: 16pt; font-weight: bold;">INR {{ number_format($donation->amount, 2) }}</td>
                     </tr>
                 </tbody>
             </table>
 
-            <p style="font-size: 11pt; color: #555;">
-                <strong>Amount in words:</strong> Rupee One Thousand Five Hundred Only (Simulated example)
-            </p>
-        </div>
-
-        <div class="qr-section">
-            <div style="width: 70%; float: left;">
-                <p style="font-size: 10pt; color: #666;">
-                    * This is a computer-generated receipt, no signature required.
-                    <br>* Donations to Samrat Foundation are tax-exempt under Section 80G of the IT Act.
-                    <br>* Your contribution helps us empower lives. Thank you!
-                </p>
-                <div style="margin-top: 40px;">
-                    <div class="signature-box">Authorized Signatory</div>
-                </div>
+            <div class="amount-words">
+                <p><strong>Amount in words:</strong> {{ \App\Helpers\NumberHelper::convertToWords($donation->amount) }} Rupees Only</p>
             </div>
-            <div class="qr-code">
-                {!! $qrCode !!}
-                <p style="font-size: 8pt; text-align: center; margin-top: 5px;">Scan to Verify</p>
+
+            @if($donation->is_80G)
+            <div class="tax-benefit">
+                <h4 style="margin-top: 0; color: #17a2b8;">📋 80G Tax Benefit</h4>
+                <p style="margin-bottom: 0;">This donation is eligible for tax deduction under Section 80G of the Income Tax Act, 1961. Donation Receipt Number: {{ $donation->receipt_number }}</p>
+            </div>
+            @endif
+
+            <div style="margin-top: 20px;">
+                <div class="signature-box">
+                    Authorized Signatory<br>
+                    <small style="font-weight: normal;">Smart NGO</small>
+                </div>
             </div>
         </div>
 
         <div style="clear: both;"></div>
         
         <div class="footer">
-            © 2026 Samrat Foundation. All rights reserved. | Visit us at www.samratfoundation.in
+            <strong>Smart NGO</strong> | Making a Positive Impact in Communities<br>
+            Email: info@smartngo.org | Phone: +91-9876543210 | Website: www.smartngo.org<br>
+            &copy; {{ date('Y') }} Smart NGO. All rights reserved.
         </div>
     </div>
 </body>

@@ -11,7 +11,9 @@ Route::get('/', function () {
     $campaigns = \App\Models\Campaign::where('is_active', true)->take(3)->get();
     $news = \App\Models\News::where('is_active', true)->latest()->take(3)->get();
     $activities = \App\Models\Activity::latest()->take(5)->get();
-    return view('welcome', compact('campaigns', 'news', 'activities'));
+    $programs = \App\Models\Program::active()->ordered()->get();
+    $siteSettings = \App\Models\Setting::pluck('value', 'setting_key')->toArray();
+    return view('welcome', compact('campaigns', 'news', 'activities', 'programs', 'siteSettings'));
 })->name('home');
 
 Route::get('/about', [\App\Http\Controllers\PageController::class, 'about'])->name('about');
@@ -24,6 +26,12 @@ Route::get('/privacy-policy', [\App\Http\Controllers\PageController::class, 'pri
 Route::get('/terms-of-service', [\App\Http\Controllers\PageController::class, 'terms'])->name('terms');
 Route::get('/cookie-policy', [\App\Http\Controllers\PageController::class, 'cookies'])->name('cookies');
 Route::post('/enquiry', [\App\Http\Controllers\Admin\EnquiryController::class, 'store'])->name('enquiries.submit');
+
+// Certificate Verification (Public)
+Route::get('/verify/certificate/{certificate_number}', [\App\Http\Controllers\CertificateVerificationController::class, 'verify'])->name('certificate.verify');
+
+// Donation Verification (Public)
+Route::get('/verify/donation/{receipt_number}', [\App\Http\Controllers\DonationVerificationController::class, 'verify'])->name('donation.verify');
 
 // Auth Routes
 Route::redirect('/admin/login', '/login');
@@ -52,11 +60,14 @@ Route::get('/donate/receipt/{id}', [\App\Http\Controllers\DonationController::cl
 // Admin Dashboard
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('dashboard');
+    Route::post('/clear-cache', [AdminDashboard::class, 'clearCache'])->name('clear-cache');
+    Route::post('/fix-folders', [AdminDashboard::class, 'fixSystemFolders'])->name('fix-folders');
     
     // Management Modules
     Route::resource('members', App\Http\Controllers\Admin\MemberController::class);
     Route::resource('donations', App\Http\Controllers\Admin\DonationController::class);
     Route::get('/donations/{id}/receipt', [App\Http\Controllers\Admin\DonationController::class, 'downloadReceipt'])->name('donations.receipt');
+    Route::post('/donations/{donation}/email', [App\Http\Controllers\Admin\DonationController::class, 'sendEmail'])->name('donations.email');
     Route::resource('campaigns', App\Http\Controllers\Admin\CampaignController::class);
     
     // Operations Modules
@@ -67,17 +78,27 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Content Modules
     Route::resource('news', App\Http\Controllers\Admin\NewsController::class);
     Route::resource('activities', App\Http\Controllers\Admin\ActivityController::class);
+    Route::resource('programs', App\Http\Controllers\Admin\ProgramController::class);
     Route::resource('enquiries', App\Http\Controllers\Admin\EnquiryController::class);
     Route::post('/enquiries/{enquiry}/reply', [App\Http\Controllers\Admin\EnquiryController::class, 'reply'])->name('enquiries.reply');
     Route::resource('beneficiaries', App\Http\Controllers\Admin\BeneficiaryController::class);
     Route::resource('certificates', App\Http\Controllers\Admin\CertificateController::class);
+    Route::post('/certificates/{certificate}/email', [App\Http\Controllers\Admin\CertificateController::class, 'sendEmail'])->name('certificates.email');
+
+    // Pages Management
+    Route::resource('pages', \App\Http\Controllers\Admin\PageController::class);
+    Route::get('/pages/privacy/edit', [\App\Http\Controllers\Admin\PageController::class, 'editPrivacy'])->name('pages.edit-privacy');
+    Route::get('/pages/terms/edit', [\App\Http\Controllers\Admin\PageController::class, 'editTerms'])->name('pages.edit-terms');
+    Route::get('/pages/cookies/edit', [\App\Http\Controllers\Admin\PageController::class, 'editCookies'])->name('pages.edit-cookies');
 
     // Profile & Password
     Route::get('/profile', [App\Http\Controllers\Admin\ProfileController::class, 'index'])->name('profile');
+    Route::post('/profile', [App\Http\Controllers\Admin\ProfileController::class, 'updateProfile'])->name('profile.update');
     Route::post('/profile/password', [App\Http\Controllers\Admin\ProfileController::class, 'updatePassword'])->name('password.update');
 
     // Settings
     Route::get('/settings', [App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
     Route::get('/settings/website-qr', [App\Http\Controllers\Admin\SettingController::class, 'websiteQr'])->name('settings.qr');
+    Route::get('/settings/footer-links', [App\Http\Controllers\Admin\SettingController::class, 'footerLinks'])->name('settings.footer');
 });

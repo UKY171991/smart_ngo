@@ -11,7 +11,7 @@
                 <span class="badge bg-light text-muted border px-3 py-2 rounded-pill small">ID: {{ $campaign->id }}</span>
             </div>
             <div class="card-body p-4">
-                <form action="{{ route('admin.campaigns.update', $campaign) }}" method="POST">
+                <form action="{{ route('admin.campaigns.update', $campaign) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     
@@ -23,6 +23,17 @@
                     <div class="mb-4">
                         <label class="form-label fw-semibold">Description</label>
                         <textarea name="description" class="form-control" rows="4">{{ $campaign->description }}</textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Campaign Image</label>
+                        @if($campaign->image)
+                            <div class="mb-3">
+                                <img src="{{ Storage::url($campaign->image) }}" class="rounded shadow-sm" style="max-height: 150px;">
+                            </div>
+                        @endif
+                        <input type="file" name="image" class="form-control" accept="image/*">
+                        <small class="text-muted">Leave empty to keep current image.</small>
                     </div>
 
                     <div class="row g-3 mb-4">
@@ -46,6 +57,26 @@
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">End Date</label>
                             <input type="date" name="end_date" class="form-control" value="{{ $campaign->end_date }}" required>
+                        </div>
+                    </div>
+
+                    <div class="card bg-light border-0 rounded-4 mb-4">
+                        <div class="card-body p-4">
+                            <h6 class="fw-bold mb-3 text-primary"><i class="fas fa-search me-2"></i> SEO Settings</h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Meta Title</label>
+                                    <input type="text" name="meta_title" class="form-control" value="{{ $campaign->meta_title }}" placeholder="SEO Title">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Meta Keywords</label>
+                                    <input type="text" name="meta_keywords" class="form-control" value="{{ $campaign->meta_keywords }}" placeholder="Keywords (comma separated)">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold">Meta Description</label>
+                                    <textarea name="meta_description" class="form-control" rows="2" placeholder="SEO Description">{{ $campaign->meta_description }}</textarea>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

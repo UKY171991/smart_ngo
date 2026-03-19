@@ -6,12 +6,6 @@
         <h3 class="mb-0 fw-bold">Support Enquiries</h3>
     </div>
 
-    @if(session('success'))
-    <div class="alert alert-success border-0 shadow-sm rounded-4 mb-4">
-        {{ session('success') }}
-    </div>
-    @endif
-
     <div class="card border-0 shadow-sm rounded-4">
         <div class="card-body p-0">
             <div class="table-responsive">

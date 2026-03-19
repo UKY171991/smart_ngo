@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('meta_title', 'Active Campaigns - Smart NGO')
 @section('meta_description', 'Support our active campaigns and help an urgent cause today. Your small contribution powers big dreams. Transparency and efficiency guaranteed.')
+@section('meta_keywords', 'ngo campaigns, donate cause, active fundraising, social impact funding')
 
 @section('content')
 <!-- Premium Breadcrumb Header -->
@@ -19,7 +20,7 @@
         <div class="col-lg-4 col-md-6 animate-fade-in-up" style="animation-delay: {{ $loop->index * 0.1 }}s">
             <div class="premium-card h-100 border-0 shadow-sm rounded-5 overflow-hidden bg-white">
                 <div class="card-img-wrapper position-relative">
-                    <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=600&auto=format&fit=crop" class="card-img-top w-100" alt="{{ $campaign->title }}" style="height: 250px; object-fit: cover;">
+                    <img src="{{ $campaign->image ? Storage::url($campaign->image) : 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=600&auto=format&fit=crop' }}" class="card-img-top w-100" alt="{{ $campaign->title }}" style="height: 250px; object-fit: cover;">
                     <div class="status-overlay position-absolute top-0 end-0 p-3">
                         <span class="badge bg-white text-primary rounded-pill shadow-sm py-2 px-3 fw-bold">Active</span>
                     </div>

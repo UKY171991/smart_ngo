@@ -7,6 +7,14 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="@yield('meta_description', $siteSettings['seo_description'] ?? 'Smart NGO is dedicated to sustainable social impact. Join our mission today.')">
+    <meta name="keywords" content="@yield('meta_keywords', $siteSettings['seo_keywords'] ?? 'ngo, charity, donation, social impact, volunteer')">
+
+    <!-- Favicon -->
+    @if(isset($siteSettings['favicon']))
+        <link rel="icon" type="image/x-icon" href="{{ filter_var($siteSettings['favicon'], FILTER_VALIDATE_URL) ? $siteSettings['favicon'] : Storage::url($siteSettings['favicon']) }}">
+    @else
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    @endif
 
     <title>@yield('meta_title', $siteSettings['seo_title'] ?? config('app.name', 'Smart NGO'))</title>
 
@@ -45,6 +53,57 @@
         .nav-link:hover::after, .nav-link.active::after { width: 100%; }
         .nav-link:hover { color: var(--primary-color) !important; }
         
+        /* Mobile Navbar Fixes */
+        @media (max-width: 991.98px) {
+            .navbar { background: transparent; transition: background 0.3s ease; }
+            .navbar.sticky, .navbar.navbar-expanded { background: var(--dark-bg) !important; padding-top: 10px !important; padding-bottom: 10px !important; }
+            
+            .navbar-collapse { 
+                background: var(--dark-bg); 
+                margin-top: 15px; 
+                padding: 1rem; 
+                border-top: 1px solid rgba(255,255,255,0.05);
+                max-height: 85vh;
+                overflow-y: auto;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+                border-bottom-left-radius: 12px;
+                border-bottom-right-radius: 12px;
+            }
+            .navbar-brand img { max-height: 35px !important; }
+            .nav-link { 
+                padding: 12px 15px !important; 
+                margin: 2px 0 !important;
+                border-radius: 8px;
+                font-size: 0.95rem;
+            }
+            .nav-link:hover, .nav-link.active { background: rgba(255,255,255,0.05); color: var(--primary-color) !important; }
+            .nav-link::after { display: none; }
+            .navbar-nav { align-items: stretch !important; }
+            .navbar-nav.gap-3 { 
+                flex-direction: column !important; 
+                margin-top: 20px !important; 
+                padding: 15px 0 0 0;
+                border-top: 1px solid rgba(255,255,255,0.05);
+                gap: 12px !important;
+            }
+            .btn-donate-nav, .btn-join-nav { width: 100%; text-align: center; padding: 12px !important; }
+
+            /* Dropdown refinements for mobile */
+            .navbar-nav .dropdown-menu { 
+                background: rgba(255,255,255,0.03) !important; 
+                border-radius: 12px !important; 
+                margin: 5px 0 !important;
+                padding: 10px !important;
+                border: 1px solid rgba(255,255,255,0.05) !important;
+            }
+            .navbar-nav .dropdown-item { 
+                color: #fff !important; 
+                border-radius: 8px;
+                padding: 10px 15px !important;
+            }
+            .navbar-nav .dropdown-item:hover { background: rgba(255,255,255,0.05) !important; }
+        }
+        
         /* Buttons */
         .btn-donate-nav { background-color: var(--primary-color); color: #fff; border-radius: 50px; padding: 8px 24px; font-weight: bold; border: 2px solid var(--primary-color); transition: all 0.3s; text-transform: uppercase; font-size: 0.9rem; }
         .btn-donate-nav:hover { background-color: transparent; color: var(--primary-color); box-shadow: 0 0 15px rgba(204, 0, 0, 0.5); }
@@ -72,15 +131,29 @@
                 nav.classList.add('py-3');
             }
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const navbarCollapse = document.getElementById('navbarSupportedContent');
+            const nav = document.querySelector('.navbar');
+            
+            if (navbarCollapse) {
+                navbarCollapse.addEventListener('show.bs.collapse', function() {
+                    nav.classList.add('navbar-expanded');
+                });
+                navbarCollapse.addEventListener('hide.bs.collapse', function() {
+                    nav.classList.remove('navbar-expanded');
+                });
+            }
+        });
     </script>
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md py-3 fixed-top">
+        <nav class="navbar navbar-expand-lg py-3 fixed-top">
             <div class="container">
                 <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
                     @if(isset($siteSettings['logo']))
-                        <img src="{{ $siteSettings['logo'] }}" alt="Logo" style="max-height: 40px;" class="me-2">
+                        <img src="{{ filter_var($siteSettings['logo'], FILTER_VALIDATE_URL) ? $siteSettings['logo'] : Storage::url($siteSettings['logo']) }}" alt="Logo" style="max-height: 40px;" class="me-2">
                     @else
                         <i class="fas fa-heart text-primary me-2"></i>
                     @endif
@@ -159,20 +232,20 @@
                         <h4 class="fw-bold mb-4 text-white"><i class="fas fa-hand-holding-heart text-primary me-2"></i>Smart NGO</h4>
                         <p class="mb-4">We are dedicated to creating a better world by empowering organizations with transparent management tools and connecting donors with impactful causes.</p>
                         <div class="d-flex gap-2">
-                            <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-                            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-                            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-                            <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="{{ $siteSettings['social_facebook'] ?? '#' }}" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                            <a href="{{ $siteSettings['social_twitter'] ?? '#' }}" class="social-icon"><i class="fab fa-twitter"></i></a>
+                            <a href="{{ $siteSettings['social_instagram'] ?? '#' }}" class="social-icon"><i class="fab fa-instagram"></i></a>
+                            <a href="{{ $siteSettings['social_linkedin'] ?? '#' }}" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
                         </div>
                     </div>
                     <div class="col-lg-2 col-md-6 text-md-center text-lg-start">
                         <h5 class="mb-4">Quick Links</h5>
                         <ul class="list-unstyled d-flex flex-column gap-2 text-md-center text-lg-start">
-                            <li><a href="{{ route('home') }}" class="footer-link">Home</a></li>
-                            <li><a href="{{ route('mission') }}" class="footer-link">Our Mission</a></li>
-                            <li><a href="{{ route('donations.index') }}" class="footer-link">Donate Now</a></li>
-                            <li><a href="{{ route('register') }}" class="footer-link">Volunteer</a></li>
-                            <li><a href="{{ route('pages.news') }}" class="footer-link">News & Press</a></li>
+                            <li><a href="{{ $siteSettings['footer_quick_link_1_url'] ?? route('home') }}" class="footer-link">{{ $siteSettings['footer_quick_link_1_text'] ?? 'Home' }}</a></li>
+                            <li><a href="{{ $siteSettings['footer_quick_link_2_url'] ?? route('mission') }}" class="footer-link">{{ $siteSettings['footer_quick_link_2_text'] ?? 'Our Mission' }}</a></li>
+                            <li><a href="{{ $siteSettings['footer_quick_link_3_url'] ?? route('donations.index') }}" class="footer-link">{{ $siteSettings['footer_quick_link_3_text'] ?? 'Donate Now' }}</a></li>
+                            <li><a href="{{ $siteSettings['footer_quick_link_4_url'] ?? route('register') }}" class="footer-link">{{ $siteSettings['footer_quick_link_4_text'] ?? 'Volunteer' }}</a></li>
+                            <li><a href="{{ $siteSettings['footer_quick_link_5_url'] ?? route('pages.news') }}" class="footer-link">{{ $siteSettings['footer_quick_link_5_text'] ?? 'News & Press' }}</a></li>
                         </ul>
                     </div>
                     <div class="col-lg-3 col-md-6">
@@ -210,9 +283,9 @@
                     </div>
                     <div class="col-md-6 text-center text-md-end">
                         <div class="footer-link small d-flex gap-3 justify-content-center justify-content-md-end">
-                            <a href="{{ route('privacy') }}" class="footer-link">Privacy Policy</a>
-                            <a href="{{ route('terms') }}" class="footer-link">Terms of Service</a>
-                            <a href="{{ route('cookies') }}" class="footer-link">Cookie Policy</a>
+                            <a href="{{ route('privacy') }}" class="footer-link">{{ $siteSettings['footer_privacy_text'] ?? 'Privacy Policy' }}</a>
+                            <a href="{{ route('terms') }}" class="footer-link">{{ $siteSettings['footer_terms_text'] ?? 'Terms of Service' }}</a>
+                            <a href="{{ route('cookies') }}" class="footer-link">{{ $siteSettings['footer_cookies_text'] ?? 'Cookie Policy' }}</a>
                         </div>
                     </div>
                 </div>

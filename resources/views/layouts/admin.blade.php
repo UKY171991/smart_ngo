@@ -12,6 +12,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- Favicon -->
+    @if(isset($siteSettings['favicon']))
+        @php
+            $favUrl = $siteSettings['favicon'];
+            if ($favUrl && !filter_var($favUrl, FILTER_VALIDATE_URL)) {
+                $favUrl = Storage::url($favUrl);
+            }
+        @endphp
+        <link rel="icon" type="image/x-icon" href="{{ $favUrl }}">
+    @else
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    @endif
+    
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -44,12 +57,40 @@
             transition: all 0.3s;
             z-index: 1000;
             box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
         }
 
         #sidebar .sidebar-header {
             padding: 20px;
             background: rgba(0,0,0,0.1);
             text-align: center;
+            flex-shrink: 0;
+        }
+
+        #sidebar .mt-4 {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* Custom scrollbar for sidebar */
+        #sidebar .mt-4::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #sidebar .mt-4::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        #sidebar .mt-4::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        #sidebar .mt-4::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
         }
 
         #sidebar .nav-link {
@@ -146,19 +187,101 @@
         }
 
         @media (max-width: 992px) {
-            #sidebar { margin-left: calc(-1 * var(--sidebar-width)); }
-            #main-content { margin-left: 0; }
-            #sidebar.active { margin-left: 0; }
+            #sidebar { 
+                left: calc(-1 * var(--sidebar-width)); 
+                opacity: 0;
+                visibility: hidden;
+            }
+            #main-content { 
+                margin-left: 0; 
+                width: 100%;
+            }
+            #sidebar.active { 
+                left: 0; 
+                opacity: 1;
+                visibility: visible;
+            }
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(0,0,0,0.5);
+                z-index: 999;
+                backdrop-filter: blur(4px);
+            }
+            #sidebar.active + .sidebar-overlay {
+                display: block;
+            }
+            .content-body {
+                padding: 15px;
+            }
+            .top-navbar {
+                padding: 0 15px;
+            }
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start !important;
+                gap: 12px;
+                padding: 1.5rem !important;
+            }
+            .card-header .d-flex, .card-header .btn-group {
+                width: 100%;
+                justify-content: flex-start !important;
+                flex-wrap: wrap;
+            }
+            .card-header h5 {
+                font-size: 1.1rem;
+            }
+            .stat-card-title {
+                font-size: 0.7rem !important;
+            }
+        }
+
+        /* Mobile Typography and UI tweaks */
+        @media (max-width: 576px) {
+            .btn-fancy {
+                padding: 8px 16px;
+                font-size: 0.85rem;
+                width: 100%;
+                margin-bottom: 5px;
+            }
+            .table th, .table td {
+                font-size: 0.85rem;
+                padding: 12px 10px !important;
+            }
+            .card-body.p-0 {
+                overflow: hidden;
+            }
+            h3 { font-size: 1.5rem; }
+            h5 { font-size: 1.1rem; }
+        }
+        
+        /* Table Responsiveness Improvements */
+        .table-responsive {
+            border-radius: 12px;
+            border: 1px solid #f1f5f9;
+            background: #fff;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
         }
     </style>
 </head>
 <body>
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
     <!-- Sidebar -->
     <div id="sidebar">
         <div class="sidebar-header d-flex align-items-center justify-content-center py-4 bg-transparent">
             @if(isset($siteSettings['logo']))
-                <img src="{{ $siteSettings['logo'] }}" alt="Logo" style="max-height: 40px;" class="me-2">
+                @php
+                    $logoUrl = $siteSettings['logo'];
+                    if ($logoUrl && !filter_var($logoUrl, FILTER_VALIDATE_URL)) {
+                        $logoUrl = Storage::url($logoUrl);
+                    }
+                @endphp
+                <img src="{{ $logoUrl }}" alt="Logo" style="max-height: 40px;" class="me-2">
             @else
                 <i class="fas fa-hand-holding-heart me-2 text-primary fa-lg"></i>
             @endif
@@ -203,7 +326,13 @@
                 <i class="fas fa-newspaper"></i> News
             </a>
             <a href="{{ route('admin.activities.index') }}" class="nav-link {{ Route::is('admin.activities.*') ? 'active' : '' }}">
-                <i class="fas fa-camera-retro"></i> Activities
+                <i class="fas fa-calendar-alt"></i> Activities
+            </a>
+            <a href="{{ route('admin.programs.index') }}" class="nav-link {{ Route::is('admin.programs.*') ? 'active' : '' }}">
+                <i class="fas fa-layer-group"></i> Programs
+            </a>
+            <a href="{{ route('admin.pages.index') }}" class="nav-link {{ Route::is('admin.pages.*') ? 'active' : '' }}">
+                <i class="fas fa-file-alt"></i> Pages
             </a>
             <a href="{{ route('admin.enquiries.index') }}" class="nav-link {{ Route::is('admin.enquiries.*') ? 'active' : '' }}">
                 <i class="fas fa-question-circle"></i> Enquiries
@@ -218,6 +347,9 @@
             </a>
             <a href="{{ route('admin.settings.qr') }}" class="nav-link {{ Route::is('admin.settings.qr') ? 'active' : '' }}">
                 <i class="fas fa-qrcode"></i> Website QR Code
+            </a>
+            <a href="{{ route('admin.settings.footer') }}" class="nav-link {{ Route::is('admin.settings.footer') ? 'active' : '' }}">
+                <i class="fas fa-link"></i> Footer Links
             </a>
 
             <div class="mt-4 p-3 footer-logout">
@@ -245,7 +377,8 @@
             <div class="d-flex align-items-center">
                 <div class="dropdown">
                     <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
-                        <img src="https://ui-avatars.com/api/?name=Admin&background=4e73df&color=fff" class="rounded-circle me-2" width="35" alt="Admin">
+                        <img src="{{ auth()->user()->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=4e73df&color=fff' }}" 
+                             class="rounded-circle me-2" width="35" height="35" alt="Admin" style="object-fit: cover;">
                         <span class="d-none d-md-inline fw-semibold">{{ auth()->user()->name }}</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow border-0">
@@ -269,14 +402,25 @@
                 <div class="alert alert-success border-0 shadow-sm mb-4">{{ session('success') }}</div>
             @endif
 
+            @if(session('error'))
+                <div class="alert alert-danger border-0 shadow-sm mb-4">{{ session('error') }}</div>
+            @endif
+
             @yield('content')
         </div>
     </div>
 
     <script>
-        document.getElementById('sidebar-toggle')?.addEventListener('click', function() {
-            document.getElementById('sidebar').classList.toggle('active');
-        });
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        const toggle = document.getElementById('sidebar-toggle');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('active');
+        }
+
+        toggle?.addEventListener('click', toggleSidebar);
+        overlay?.addEventListener('click', toggleSidebar);
     </script>
 </body>
 </html>

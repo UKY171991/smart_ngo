@@ -63,7 +63,7 @@
             <tbody>
                 <tr>
                     <td class="summary-td">One-time Membership Fee for {{ $user->designation->title ?? 'General Membership' }}</td>
-                    <td class="summary-td amount-cell" style="text-align: right;">₹{{ number_format($user->designation->fees ?? 0, 2) }}</td>
+                    <td class="summary-td amount-cell" style="text-align: right;">INR {{ number_format($user->designation->fees ?? 0, 2) }}</td>
                 </tr>
             </tbody>
         </table>

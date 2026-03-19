@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('meta_title', 'Home - Smart NGO')
 @section('meta_description', 'Empowering lives and building futures. Smart NGO provides transparency and technology to create sustainable social change across education, healthcare, and community growth.')
+@section('meta_keywords', 'ngo, charity, donation, social impact, volunteer, samrat foundation, india')
 
 @section('content')
 <div class="hero-wrapper overflow-hidden position-relative" style="background: url('https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=1600&auto=format&fit=crop') center/cover no-repeat; min-height: 100vh; display: flex; align-items: center; margin-top: -80px;">
@@ -10,7 +11,7 @@
     <div class="container position-relative" style="z-index: 2; padding-top: 180px; padding-bottom: 80px;">
         <div class="row align-items-center g-5">
             <div class="col-lg-8 col-xl-7 text-white animate-fade-in-up">
-                <span class="badge px-3 py-2 rounded-pill mb-4 shadow-sm" style="background-color: var(--primary-color); font-size: 0.85rem; letter-spacing: 2px;">REGISTERED NGO</span>
+                <span class="badge px-3 py-2 rounded-pill mb-4 shadow-sm" style="background-color: var(--primary-color); font-size: 0.85rem; letter-spacing: 2px;">{{ $siteSettings['hero_badge'] ?? 'REGISTERED NGO' }}</span>
                 <h1 class="display-3 fw-bolder mb-4 text-uppercase" style="line-height: 1.1;">
                     {{ $siteSettings['hero_title'] ?? 'Change lives with SAMRAT FOUNDATION TRUST' }}
                 </h1>
@@ -67,47 +68,67 @@
 <div class="container py-5">
     <!-- Programs & Impact Section (Reference: SFT Programs) -->
     <div class="row g-4 mb-5 pb-5">
-        <div class="col-md-4 animate-fade-in" style="animation-delay: 0.1s;">
-            <div class="stat-card p-5 rounded-4 shadow-sm text-center border-0 h-100 position-relative overflow-hidden group-hover" style="background-color: white;">
-                <div class="position-absolute top-0 start-0 w-100 h-100 bg-primary-soft opacity-0 transition group-hover-opacity-100"></div>
-                <div class="icon-box-modern mb-4 mx-auto position-relative z-index-1">
-                    <i class="fas fa-graduation-cap fa-2x text-primary"></i>
-                </div>
-                <h3 class="fw-bold mb-3 position-relative z-index-1">Education Support</h3>
-                <p class="text-muted small position-relative z-index-1 mb-4">Empowering underprivileged children with quality education and necessary supplies.</p>
-                <div class="d-flex align-items-center justify-content-center gap-2 text-dark fw-bold position-relative z-index-1">
-                    <h2 class="mb-0 text-primary">500+</h2>
-                    <span class="small text-uppercase text-muted">Students<br>Supported</span>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 animate-fade-in" style="animation-delay: 0.2s;">
-            <div class="stat-card p-5 rounded-4 shadow-lg text-center border-0 h-100 highlight position-relative overflow-hidden group-hover">
-                <div class="icon-box-modern highlight-icon mb-4 mx-auto position-relative z-index-1">
-                    <i class="fas fa-heartbeat fa-2x text-white"></i>
-                </div>
-                <h3 class="fw-bold mb-3 position-relative z-index-1 text-white">Healthcare Needs</h3>
-                <p class="text-white small opacity-75 position-relative z-index-1 mb-4">Providing accessible healthcare, medical camps, and emergency funds for the needy.</p>
-                <div class="d-flex align-items-center justify-content-center gap-2 text-white fw-bold position-relative z-index-1">
-                    <h2 class="mb-0">2.5k+</h2>
-                    <span class="small text-uppercase opacity-75">Lives<br>Touched</span>
+        @forelse($programs as $index => $program)
+            <div class="col-md-4 animate-fade-in" style="animation-delay: {{ $index * 0.1 }}s;">
+                <div class="stat-card p-5 rounded-4 shadow-sm text-center border-0 h-100 position-relative overflow-hidden group-hover {{ $program->is_featured ? 'highlight' : '' }}" style="background-color: {{ $program->is_featured ? 'var(--primary-color)' : 'white' }};">
+                    @if(!$program->is_featured)
+                        <div class="position-absolute top-0 start-0 w-100 h-100 bg-primary-soft opacity-0 transition group-hover-opacity-100"></div>
+                    @endif
+                    <div class="icon-box-modern {{ $program->is_featured ? 'highlight-icon' : '' }} mb-4 mx-auto position-relative z-index-1">
+                        <i class="{{ $program->icon }} fa-2x {{ $program->is_featured ? 'text-white' : 'text-primary' }}"></i>
+                    </div>
+                    <h3 class="fw-bold mb-3 position-relative z-index-1 {{ $program->is_featured ? 'text-white' : '' }}">{{ $program->title }}</h3>
+                    <p class="small position-relative z-index-1 mb-4 {{ $program->is_featured ? 'text-white opacity-75' : 'text-muted' }}">{{ $program->description }}</p>
+                    <div class="d-flex align-items-center justify-content-center gap-2 {{ $program->is_featured ? 'text-white' : 'text-dark' }} fw-bold position-relative z-index-1">
+                        <h2 class="mb-0 {{ $program->is_featured ? '' : 'text-primary' }}">{{ $program->statistic_number }}</h2>
+                        <span class="small text-uppercase {{ $program->is_featured ? 'opacity-75' : 'text-muted' }}">{{ $program->statistic_label }}</span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-4 animate-fade-in" style="animation-delay: 0.3s;">
-            <div class="stat-card p-5 rounded-4 shadow-sm text-center border-0 h-100 position-relative overflow-hidden group-hover" style="background-color: white;">
-                <div class="position-absolute top-0 start-0 w-100 h-100 bg-primary-soft opacity-0 transition group-hover-opacity-100"></div>
-                <div class="icon-box-modern mb-4 mx-auto position-relative z-index-1">
-                    <i class="fas fa-laptop-code fa-2x text-primary"></i>
-                </div>
-                <h3 class="fw-bold mb-3 position-relative z-index-1">Skill Development</h3>
-                <p class="text-muted small position-relative z-index-1 mb-4">Training youth and women with industry-relevant skills to secure a livelihood.</p>
-                <div class="d-flex align-items-center justify-content-center gap-2 text-dark fw-bold position-relative z-index-1">
-                    <h2 class="mb-0 text-primary">12+</h2>
-                    <span class="small text-uppercase text-muted">Active<br>Programs</span>
+        @empty
+            <!-- Fallback to hardcoded cards if no programs exist -->
+            <div class="col-md-4 animate-fade-in" style="animation-delay: 0.1s;">
+                <div class="stat-card p-5 rounded-4 shadow-sm text-center border-0 h-100 position-relative overflow-hidden group-hover" style="background-color: white;">
+                    <div class="position-absolute top-0 start-0 w-100 h-100 bg-primary-soft opacity-0 transition group-hover-opacity-100"></div>
+                    <div class="icon-box-modern mb-4 mx-auto position-relative z-index-1">
+                        <i class="fas fa-graduation-cap fa-2x text-primary"></i>
+                    </div>
+                    <h3 class="fw-bold mb-3 position-relative z-index-1">Education Support</h3>
+                    <p class="text-muted small position-relative z-index-1 mb-4">Empowering underprivileged children with quality education and necessary supplies.</p>
+                    <div class="d-flex align-items-center justify-content-center gap-2 text-dark fw-bold position-relative z-index-1">
+                        <h2 class="mb-0 text-primary">500+</h2>
+                        <span class="small text-uppercase text-muted">Students<br>Supported</span>
+                    </div>
                 </div>
             </div>
-        </div>
+            <div class="col-md-4 animate-fade-in" style="animation-delay: 0.2s;">
+                <div class="stat-card p-5 rounded-4 shadow-lg text-center border-0 h-100 highlight position-relative overflow-hidden group-hover">
+                    <div class="icon-box-modern highlight-icon mb-4 mx-auto position-relative z-index-1">
+                        <i class="fas fa-heartbeat fa-2x text-white"></i>
+                    </div>
+                    <h3 class="fw-bold mb-3 position-relative z-index-1 text-white">Healthcare Needs</h3>
+                    <p class="text-white small opacity-75 position-relative z-index-1 mb-4">Providing accessible healthcare, medical camps, and emergency funds for the needy.</p>
+                    <div class="d-flex align-items-center justify-content-center gap-2 text-white fw-bold position-relative z-index-1">
+                        <h2 class="mb-0">2.5k+</h2>
+                        <span class="small text-uppercase opacity-75">Lives<br>Touched</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 animate-fade-in" style="animation-delay: 0.3s;">
+                <div class="stat-card p-5 rounded-4 shadow-sm text-center border-0 h-100 position-relative overflow-hidden group-hover" style="background-color: white;">
+                    <div class="position-absolute top-0 start-0 w-100 h-100 bg-primary-soft opacity-0 transition group-hover-opacity-100"></div>
+                    <div class="icon-box-modern mb-4 mx-auto position-relative z-index-1">
+                        <i class="fas fa-laptop-code fa-2x text-primary"></i>
+                    </div>
+                    <h3 class="fw-bold mb-3 position-relative z-index-1">Skill Development</h3>
+                    <p class="text-muted small position-relative z-index-1 mb-4">Training youth and women with industry-relevant skills to secure a livelihood.</p>
+                    <div class="d-flex align-items-center justify-content-center gap-2 text-dark fw-bold position-relative z-index-1">
+                        <h2 class="mb-0 text-primary">12+</h2>
+                        <span class="small text-uppercase text-muted">Active<br>Programs</span>
+                    </div>
+                </div>
+            </div>
+        @endforelse
     </div>
 
     <!-- Active Causes / Campaigns Grid -->
@@ -128,7 +149,7 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="cause-card h-100 d-flex flex-column bg-white rounded-4 overflow-hidden border transition hover-shadow">
                         <div class="position-relative">
-                            <img src="https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=600&auto=format&fit=crop" class="w-100" style="height: 220px; object-fit: cover;" alt="{{ $campaign->title }}">
+                            <img src="{{ $campaign->image ? Storage::url($campaign->image) : 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=600&auto=format&fit=crop' }}" class="w-100" style="height: 220px; object-fit: cover;" alt="{{ $campaign->title }}">
                             <div class="position-absolute top-0 start-0 p-3 w-100 d-flex justify-content-between">
                                 <span class="badge bg-primary px-3 py-2 rounded-pill fw-bold text-uppercase shadow-sm" style="font-size: 0.7rem;">Education</span>
                                 <span class="badge bg-white text-dark px-3 py-2 rounded-pill fw-bold shadow-sm" style="font-size: 0.7rem;"><i class="fas fa-hand-holding-heart text-primary me-1"></i> Urgent</span>
@@ -180,7 +201,7 @@
                 @forelse ($news as $item)
                     <div class="col-12">
                         <div class="news-card border rounded-4 overflow-hidden bg-white d-flex flex-column flex-md-row group-hover transition hover-shadow">
-                            <div class="news-img position-relative" style="background-image: url('https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?q=80&w=400'); width: 100%; min-width: 250px; height: 100%; min-height: 200px; background-size: cover; background-position: center;">
+                            <div class="news-img position-relative" style="background-image: url('{{ $item->image ? Storage::url($item->image) : 'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?q=80&w=400' }}'); width: 100%; min-width: 250px; height: 100%; min-height: 200px; background-size: cover; background-position: center;">
                                 <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-0 transition group-hover-opacity-50"></div>
                             </div>
                             <div class="p-4 flex-grow-1">
@@ -280,11 +301,11 @@
     <div class="cta-banner rounded-5 p-5 text-center text-white shadow-2xl position-relative overflow-hidden" style="background: var(--primary-color);">
         <div class="cta-overlay opacity-25 position-absolute top-0 start-0 w-100 h-100" style="background-image: url('https://www.transparenttextures.com/patterns/cubes.png');"></div>
         <div class="position-relative" style="z-index: 2;">
-            <h2 class="display-4 fw-bold mb-4">Ready to spark a change?</h2>
-            <p class="lead mb-5 opacity-75 max-w-600 mx-auto">Join thousands of members who are making a real difference in the lives of those who need it most.</p>
+            <h2 class="display-4 fw-bold mb-4">{{ $siteSettings['cta_title'] ?? 'Ready to spark a change?' }}</h2>
+            <p class="lead mb-5 opacity-75 max-w-600 mx-auto">{{ $siteSettings['cta_description'] ?? 'Join thousands of members who are making a real difference in the lives of those who need it most.' }}</p>
             <div class="d-flex flex-wrap justify-content-center gap-3">
-                <a href="{{ route('register') }}" class="btn btn-white btn-lg px-5 py-3 rounded-pill fw-bold text-primary shadow-lg hover-scale">Join Us Today</a>
-                <a href="{{ route('contact') }}" class="btn btn-outline-light btn-lg px-5 py-3 rounded-pill fw-bold hover-scale">Contact Us</a>
+                <a href="{{ route('register') }}" class="btn btn-white btn-lg px-5 py-3 rounded-pill fw-bold text-primary shadow-lg hover-scale">{{ $siteSettings['cta_primary_button'] ?? 'Join Us Today' }}</a>
+                <a href="{{ route('contact') }}" class="btn btn-outline-light btn-lg px-5 py-3 rounded-pill fw-bold hover-scale">{{ $siteSettings['cta_secondary_button'] ?? 'Contact Us' }}</a>
             </div>
         </div>
     </div>
@@ -331,7 +352,7 @@
     
     .hero-image-stack { position: relative; padding: 20px; }
     .main-img { z-index: 1; position: relative; border: 8px solid rgba(255,255,255,0.1); }
-    .floating-card { position: absolute; bottom: -20px; left: -20px; z-index: 2; min-width: 220px; border: none; }
+    .floating-card { position: absolute; top: 50%; left: -20px; z-index: 2; min-width: 220px; border: none; transform: translateY(-50%); }
     
     /* Hover Effects Group */
     .group-hover:hover .group-hover-opacity-100 { opacity: 1 !important; }

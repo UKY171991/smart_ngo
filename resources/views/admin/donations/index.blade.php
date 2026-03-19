@@ -9,12 +9,6 @@
         </a>
     </div>
 
-    @if(session('success'))
-    <div class="alert alert-success border-0 shadow-sm rounded-4 mb-4">
-        {{ session('success') }}
-    </div>
-    @endif
-
     <div class="card border-0 shadow-sm rounded-4">
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -51,6 +45,10 @@
                             <td class="px-4 text-end">
                                 <div class="btn-group">
                                     <a href="{{ route('admin.donations.receipt', $donation->id) }}" target="_blank" class="btn btn-sm btn-light text-primary" title="Download Receipt"><i class="fas fa-file-pdf"></i></a>
+                                    <form action="{{ route('admin.donations.email', $donation) }}" method="POST" class="d-inline" onsubmit="return confirm('Send receipt to {{ $donation->donor_email }}?');">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm btn-light text-success" title="Email Receipt"><i class="fas fa-envelope"></i></button>
+                                    </form>
                                     <form action="{{ route('admin.donations.destroy', $donation) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this record?');">
                                         @csrf
                                         @method('DELETE')

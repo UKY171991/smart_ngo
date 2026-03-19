@@ -10,7 +10,7 @@
                 <h5 class="fw-bold mb-0 text-primary"><i class="fas fa-plus-circle me-2"></i> Campaign Information</h5>
             </div>
             <div class="card-body p-4">
-                <form action="{{ route('admin.campaigns.store') }}" method="POST">
+                <form action="{{ route('admin.campaigns.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     
                     <div class="mb-4">
@@ -21,6 +21,12 @@
                     <div class="mb-4">
                         <label class="form-label fw-semibold">Description</label>
                         <textarea name="description" class="form-control" rows="4" placeholder="Describe the purpose of this campaign..."></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Campaign Image</label>
+                        <input type="file" name="image" class="form-control" accept="image/*">
+                        <small class="text-muted">Recommended size: 800x500 pixels.</small>
                     </div>
 
                     <div class="row g-3 mb-4">
@@ -44,6 +50,26 @@
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">End Date</label>
                             <input type="date" name="end_date" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="card bg-light border-0 rounded-4 mb-4">
+                        <div class="card-body p-4">
+                            <h6 class="fw-bold mb-3 text-primary"><i class="fas fa-search me-2"></i> SEO Settings</h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Meta Title</label>
+                                    <input type="text" name="meta_title" class="form-control" placeholder="SEO Title">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Meta Keywords</label>
+                                    <input type="text" name="meta_keywords" class="form-control" placeholder="Keywords (comma separated)">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold">Meta Description</label>
+                                    <textarea name="meta_description" class="form-control" rows="2" placeholder="SEO Description"></textarea>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

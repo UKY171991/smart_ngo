@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('meta_title', 'Latest News - Smart NGO')
 @section('meta_description', 'Stay updated with the latest news, success stories, and impact reports from Smart NGO. See how your donations are making a measurable difference.')
+@section('meta_keywords', 'ngo news, charity updates, impact stories, social welfare reports')
 
 @section('content')
 <!-- Premium Breadcrumb Header -->
@@ -19,7 +20,7 @@
         <div class="col-lg-6 col-xl-4 animate-fade-in-up" style="animation-delay: {{ $loop->index * 0.1 }}s">
             <div class="card h-100 border-0 shadow-sm rounded-5 overflow-hidden bg-white premium-hover">
                 <div class="position-relative">
-                    <img src="https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?q=80&w=600&auto=format&fit=crop" class="card-img-top w-100" alt="{{ $article->title }}" style="height: 240px; object-fit: cover;">
+                    <img src="{{ $article->image ? Storage::url($article->image) : 'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?q=80&w=600&auto=format&fit=crop' }}" class="card-img-top w-100" alt="{{ $article->title }}" style="height: 240px; object-fit: cover;">
                     <div class="date-overlay position-absolute bottom-0 start-0 m-3">
                         <span class="badge bg-white text-dark rounded-3 px-3 py-2 fw-bold shadow-sm">
                             <i class="far fa-calendar-alt text-primary me-2"></i>{{ $article->created_at->format('d M, Y') }}

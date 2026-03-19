@@ -69,4 +69,29 @@ class CertificateController extends Controller
         $certificate->delete();
         return redirect()->route('admin.certificates.index')->with('success', 'Certificate record deleted.');
     }
+
+    public function sendEmail(Certificate $certificate)
+    {
+        try {
+            // Generate PDF
+            $qrData = url('/verify/certificate/' . $certificate->certificate_number);
+            $qrCode = \SimpleSoftwareIO\QrCode\Facades\QrCode::size(100)->format('svg')->generate($qrData);
+            
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.certificates.templates.' . $certificate->template_id, compact('certificate', 'qrCode'))
+                    ->setPaper('a4', 'landscape');
+            
+            $pdfContent = $pdf->output();
+            $fileName = $certificate->certificate_number . '.pdf';
+            
+            // Send email
+            \Illuminate\Support\Facades\Mail::to($certificate->recipient_email)->send(
+                new \App\Mail\CertificateMail($certificate, $pdfContent, $fileName)
+            );
+            
+            return redirect()->route('admin.certificates.index')->with('success', 'Certificate emailed successfully to ' . $certificate->recipient_email);
+            
+        } catch (\Exception $e) {
+            return redirect()->route('admin.certificates.index')->with('error', 'Failed to send email: ' . $e->getMessage());
+        }
+    }
 }

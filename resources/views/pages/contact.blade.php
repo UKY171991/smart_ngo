@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('meta_title', 'Contact Us - Smart NGO')
 @section('meta_description', 'Get in touch with Smart NGO. We\'re here to help and listen to your ideas for social change. Visit us or reach out via phone/email.')
+@section('meta_keywords', 'contact ngo, support, collaboration, social change office')
 
 @section('content')
 <!-- Contact Specific Header -->

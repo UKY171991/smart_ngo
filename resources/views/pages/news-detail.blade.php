@@ -1,4 +1,7 @@
 @extends('layouts.app')
+@section('meta_title', $news->meta_title ?? $news->title)
+@section('meta_description', $news->meta_description ?? Str::limit(strip_tags($news->content), 160))
+@section('meta_keywords', $news->meta_keywords ?? 'ngo news, impact stories, charity updates')
 
 @section('content')
 <section class="py-5 bg-light">

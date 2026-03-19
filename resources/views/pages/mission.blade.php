@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('meta_title', 'Our Mission - Smart NGO')
 @section('meta_description', 'Our mission and vision for a better world. We are dedicated to providing sustainable technology and community action to ensure equal opportunities for all.')
+@section('meta_keywords', 'ngo vision, social mission, 2030 goals, community action')
 
 @section('content')
 <!-- Visionary Header -->

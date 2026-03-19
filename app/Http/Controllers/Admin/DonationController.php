@@ -50,7 +50,15 @@ class DonationController extends Controller
             $campaign->increment('current_amount', $donation->amount);
         }
 
-        return redirect()->route('admin.donations.index')->with('success', 'Donation record added!');
+        // Send email receipt automatically
+        try {
+            $this->sendReceiptEmail($donation);
+        } catch (\Exception $e) {
+            // Log error but don't fail the donation creation
+            \Log::error('Failed to send donation receipt email: ' . $e->getMessage());
+        }
+
+        return redirect()->route('admin.donations.index')->with('success', 'Donation record added and receipt emailed successfully!');
     }
 
     public function downloadReceipt($id)
@@ -68,5 +76,32 @@ class DonationController extends Controller
     {
         $donation->delete();
         return redirect()->route('admin.donations.index')->with('success', 'Donation record deleted.');
+    }
+
+    private function sendReceiptEmail($donation)
+    {
+        // Generate PDF
+        $qrData = url('/verify/donation/' . $donation->receipt_number);
+        $qrCode = \SimpleSoftwareIO\QrCode\Facades\QrCode::size(100)->format('svg')->generate($qrData);
+        
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdfs.donation-receipt', compact('donation', 'qrCode'));
+        
+        $pdfContent = $pdf->output();
+        $fileName = 'RECEIPT-' . $donation->receipt_number . '.pdf';
+        
+        // Send email
+        \Illuminate\Support\Facades\Mail::to($donation->donor_email)->send(
+            new \App\Mail\DonationReceiptMail($donation, $pdfContent, $fileName)
+        );
+    }
+
+    public function sendEmail(Donation $donation)
+    {
+        try {
+            $this->sendReceiptEmail($donation);
+            return redirect()->route('admin.donations.index')->with('success', 'Donation receipt emailed successfully to ' . $donation->donor_email);
+        } catch (\Exception $e) {
+            return redirect()->route('admin.donations.index')->with('error', 'Failed to send email: ' . $e->getMessage());
+        }
     }
 }

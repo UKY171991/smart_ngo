@@ -83,6 +83,49 @@
     </div>
 </div>
 
+<!-- System Maintenance -->
+<div class="row g-4 mb-5">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm rounded-4 bg-light">
+            <div class="card-body p-4">
+                <div class="row align-items-center g-4">
+                    <div class="col-lg-8">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="bg-dark bg-opacity-10 p-3 rounded-circle d-none d-sm-block">
+                                <i class="fas fa-tools text-dark fa-lg"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-1">System Maintenance</h6>
+                                <p class="text-muted small mb-0">Clear temporary files and verify your storage configuration.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="row g-2">
+                            <div class="col-6 col-lg-12">
+                                <form action="{{ route('admin.clear-cache') }}" method="POST" class="w-100">
+                                    @csrf
+                                    <button type="submit" class="btn btn-warning btn-fancy w-100 rounded-pill fw-bold shadow-sm py-2">
+                                        <i class="fas fa-broom me-2"></i> Cache
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="col-6 col-lg-12">
+                                <form action="{{ route('admin.fix-folders') }}" method="POST" class="w-100">
+                                    @csrf
+                                    <button type="submit" class="btn btn-dark btn-fancy w-100 rounded-pill fw-bold shadow-sm py-2">
+                                        <i class="fas fa-folder-plus me-2"></i> Fix
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row g-4">
     <!-- Quick Actions -->
     <div class="col-lg-8">
@@ -97,22 +140,28 @@
             <div class="card-body p-4">
                 <div class="row g-3">
                     <div class="col-6 col-md-3">
-                        <div class="p-3 border rounded-4 text-center hover-shadow transition">
-                            <i class="fas fa-user-plus text-primary fs-3 mb-2"></i>
-                            <p class="mb-0 small fw-bold">Add Member</p>
-                        </div>
+                        <a href="{{ route('admin.members.create') }}" class="text-decoration-none">
+                            <div class="p-3 border rounded-4 text-center hover-shadow transition">
+                                <i class="fas fa-user-plus text-primary fs-3 mb-2"></i>
+                                <p class="mb-0 small fw-bold text-dark">Add Member</p>
+                            </div>
+                        </a>
                     </div>
                     <div class="col-6 col-md-3">
-                        <div class="p-3 border rounded-4 text-center hover-shadow transition">
-                            <i class="fas fa-receipt text-success fs-3 mb-2"></i>
-                            <p class="mb-0 small fw-bold">New Donation</p>
-                        </div>
+                        <a href="{{ route('admin.donations.create') }}" class="text-decoration-none">
+                            <div class="p-3 border rounded-4 text-center hover-shadow transition">
+                                <i class="fas fa-receipt text-success fs-3 mb-2"></i>
+                                <p class="mb-0 small fw-bold text-dark">New Donation</p>
+                            </div>
+                        </a>
                     </div>
                     <div class="col-6 col-md-3">
-                        <div class="p-3 border rounded-4 text-center hover-shadow transition">
-                            <i class="fas fa-newspaper text-info fs-3 mb-2"></i>
-                            <p class="mb-0 small fw-bold">Post News</p>
-                        </div>
+                        <a href="{{ route('admin.news.create') }}" class="text-decoration-none">
+                            <div class="p-3 border rounded-4 text-center hover-shadow transition">
+                                <i class="fas fa-newspaper text-info fs-3 mb-2"></i>
+                                <p class="mb-0 small fw-bold text-dark">Post News</p>
+                            </div>
+                        </a>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="p-3 border rounded-4 text-center hover-shadow transition">

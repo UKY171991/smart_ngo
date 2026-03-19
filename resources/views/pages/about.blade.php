@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('meta_title', 'About Us - Smart NGO')
 @section('meta_description', 'Discover the passion, transparency, and technology behind our mission to transform lives. Read about our journey and the vision that drives our NGO.')
+@section('meta_keywords', 'about ngo, mission, transparency, social impact journey')
 
 @section('content')
 <!-- Premium Breadcrumb Header -->

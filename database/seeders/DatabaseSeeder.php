@@ -17,9 +17,20 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Create admin user only if not exists
+        if (!User::where('email', 'admin@smartngo.org')->exists()) {
+            User::factory()->create([
+                'name' => 'Admin User',
+                'email' => 'admin@smartngo.org',
+                'password' => bcrypt('password'),
+                'role' => 'admin',
+                'status' => 'active',
+                'phone' => '9876543210'
+            ]);
+        }
+
+        // Call SmartNGOSeeder for additional data
+        $this->call(SmartNGOSeeder::class);
+        $this->call(DesignationSeeder::class);
     }
 }

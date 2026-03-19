@@ -38,6 +38,25 @@
                                 <option value="on-hold" {{ $project->status == 'on-hold' ? 'selected' : '' }}>On Hold</option>
                             </select>
                         </div>
+
+                        <div class="col-12 mt-4 px-3 py-3 rounded-4 bg-light border-0">
+                            <h6 class="fw-bold mb-3 text-primary"><i class="fas fa-search me-2"></i> SEO Settings</h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Meta Title</label>
+                                    <input type="text" name="meta_title" class="form-control" value="{{ $project->meta_title }}" placeholder="SEO Title">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Meta Keywords</label>
+                                    <input type="text" name="meta_keywords" class="form-control" value="{{ $project->meta_keywords }}" placeholder="Keywords (comma separated)">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold">Meta Description</label>
+                                    <textarea name="meta_description" class="form-control" rows="2" placeholder="SEO Description">{{ $project->meta_description }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="col-12 mt-4 pt-2">
                             <hr>
                             <div class="d-flex gap-2">

@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('meta_title', $title . ' - Smart NGO')
 @section('meta_description', 'Read the ' . strtolower($title) . ' for Smart NGO to understand our data protection, user agreements, and compliance standards.')
+@section('meta_keywords', 'ngo policy, privacy, terms of service, legal documents, smart ngo')
 
 @section('content')
 <!-- Premium Breadcrumb Header -->

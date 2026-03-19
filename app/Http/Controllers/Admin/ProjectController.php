@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ProjectController extends Controller
 {
@@ -25,9 +26,15 @@ class ProjectController extends Controller
             'title' => 'required|string|max:255',
             'budget' => 'required|numeric|min:0',
             'status' => 'required|string',
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string|max:500',
+            'meta_keywords' => 'nullable|string|max:500',
         ]);
 
-        Project::create($request->all());
+        $data = $request->all();
+        $data['slug'] = Str::slug($request->title);
+
+        Project::create($data);
         return redirect()->route('admin.projects.index')->with('success', 'Project created successfully.');
     }
 
@@ -42,9 +49,15 @@ class ProjectController extends Controller
             'title' => 'required|string|max:255',
             'budget' => 'required|numeric|min:0',
             'status' => 'required|string',
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string|max:500',
+            'meta_keywords' => 'nullable|string|max:500',
         ]);
 
-        $project->update($request->all());
+        $data = $request->all();
+        $data['slug'] = Str::slug($request->title);
+
+        $project->update($data);
         return redirect()->route('admin.projects.index')->with('success', 'Project updated successfully.');
     }
 

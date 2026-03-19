@@ -31,10 +31,10 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Designation</label>
-                            <select name="designation_id" class="form-select" required>
+                            <select name="designation_id" class="form-select form-select-lg" required>
                                 <option value="">Select Position</option>
                                 @foreach($designations as $designation)
-                                    <option value="{{ $designation->id }}">{{ $designation->title }}</option>
+                                    <option value="{{ $designation->id }}">{{ $designation->title }} - INR {{ number_format($designation->fees, 2) }}</option>
                                 @endforeach
                             </select>
                         </div>

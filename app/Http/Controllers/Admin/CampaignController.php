@@ -28,9 +28,13 @@ class CampaignController extends Controller
             'goal_amount' => 'required|numeric',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string|max:500',
+            'meta_keywords' => 'nullable|string|max:500',
         ]);
 
-        Campaign::create([
+        $data = [
             'title' => $request->title,
             'slug' => Str::slug($request->title),
             'description' => $request->description,
@@ -38,7 +42,16 @@ class CampaignController extends Controller
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
             'is_active' => $request->has('is_active'),
-        ]);
+            'meta_title' => $request->meta_title,
+            'meta_description' => $request->meta_description,
+            'meta_keywords' => $request->meta_keywords,
+        ];
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('campaigns', 'public');
+        }
+
+        Campaign::create($data);
 
         return redirect()->route('admin.campaigns.index')->with('success', 'Campaign created successfully!');
     }
@@ -53,9 +66,13 @@ class CampaignController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'goal_amount' => 'required|numeric',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string|max:500',
+            'meta_keywords' => 'nullable|string|max:500',
         ]);
 
-        $campaign->update([
+        $data = [
             'title' => $request->title,
             'slug' => Str::slug($request->title),
             'description' => $request->description,
@@ -63,7 +80,19 @@ class CampaignController extends Controller
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
             'is_active' => $request->has('is_active'),
-        ]);
+            'meta_title' => $request->meta_title,
+            'meta_description' => $request->meta_description,
+            'meta_keywords' => $request->meta_keywords,
+        ];
+
+        if ($request->hasFile('image')) {
+            if ($campaign->image && \Illuminate\Support\Facades\Storage::disk('public')->exists($campaign->image)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($campaign->image);
+            }
+            $data['image'] = $request->file('image')->store('campaigns', 'public');
+        }
+
+        $campaign->update($data);
 
         return redirect()->route('admin.campaigns.index')->with('success', 'Campaign updated successfully!');
     }

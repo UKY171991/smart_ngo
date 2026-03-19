@@ -9,12 +9,6 @@
         </a>
     </div>
 
-    @if(session('success'))
-    <div class="alert alert-success border-0 shadow-sm rounded-4 mb-4">
-        {{ session('success') }}
-    </div>
-    @endif
-
     @if(session('error'))
     <div class="alert alert-danger border-0 shadow-sm rounded-4 mb-4">
         {{ session('error') }}
@@ -53,6 +47,10 @@
                             <td class="px-4 text-end">
                                 <div class="btn-group">
                                     <a href="{{ route('admin.certificates.show', $cert) }}" target="_blank" class="btn btn-sm btn-light text-primary" title="View PDF"><i class="fas fa-file-pdf"></i></a>
+                                    <form action="{{ route('admin.certificates.email', $cert) }}" method="POST" class="d-inline" onsubmit="return confirm('Send certificate to {{ $cert->recipient_email }}?');">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm btn-light text-success" title="Email Certificate"><i class="fas fa-envelope"></i></button>
+                                    </form>
                                     <form action="{{ route('admin.certificates.destroy', $cert) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this certificate record?');">
                                         @csrf
                                         @method('DELETE')
