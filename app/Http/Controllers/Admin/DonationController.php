@@ -33,7 +33,7 @@ class DonationController extends Controller
         ]);
 
         $donation = Donation::create([
-            'user_id' => $request->user_id, // Member selection
+            'user_id' => $request->user_id,
             'campaign_id' => $request->campaign_id,
             'donor_name' => $request->donor_name,
             'donor_email' => $request->donor_email,
@@ -42,23 +42,23 @@ class DonationController extends Controller
             'payment_method' => $request->payment_method,
             'receipt_number' => 'ADM-' . strtoupper(\Illuminate\Support\Str::random(10)),
             'is_80G' => $request->has('is_80G'),
-            'status' => 'completed', // Admin manually entering is usually completed
+            'status' => 'completed',
         ]);
 
         if ($request->campaign_id) {
             $campaign = \App\Models\Campaign::find($request->campaign_id);
-            $campaign->increment('current_amount', $donation->amount);
+            if ($campaign) {
+                $campaign->increment('current_amount', $donation->amount);
+            }
         }
 
-        // Send email receipt automatically
         try {
             $this->sendReceiptEmail($donation);
+            return redirect()->route('admin.donations.index')->with('success', 'Donation record saved successfully and receipt sent to ' . $donation->donor_email);
         } catch (\Exception $e) {
-            // Log error but don't fail the donation creation
-            \Log::error('Failed to send donation receipt email: ' . $e->getMessage());
+            \Log::error('Mail Error: ' . $e->getMessage());
+            return redirect()->route('admin.donations.index')->with('success', 'Donation saved! However, the email receipt could not be sent. Please check your Mail Setup. Error: ' . $e->getMessage());
         }
-
-        return redirect()->route('admin.donations.index')->with('success', 'Donation record added and receipt emailed successfully!');
     }
 
     public function downloadReceipt($id)

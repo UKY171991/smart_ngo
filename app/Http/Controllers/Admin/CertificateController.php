@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Certificate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CertificateController extends Controller
 {
@@ -27,11 +28,11 @@ class CertificateController extends Controller
             'recipient_email' => 'required|email',
             'type' => 'required|in:membership,achievement,internship,visitor',
             'template_id' => 'required|string',
-            'metadata' => 'nullable|string', // JSON string from frontend or just a text field
+            'metadata' => 'nullable|string',
         ]);
 
         $certificate = Certificate::create([
-            'user_id' => $request->user_id, // nullable
+            'user_id' => $request->user_id,
             'recipient_name' => $validated['recipient_name'],
             'recipient_email' => $validated['recipient_email'],
             'type' => $validated['type'],
@@ -40,7 +41,41 @@ class CertificateController extends Controller
             'metadata' => ['description' => $validated['metadata']],
         ]);
 
-        return redirect()->route('admin.certificates.index')->with('success', 'Certificate generated and saved successfully. Email dispatch can be triggered from the list.');
+        try {
+            $this->sendEmailLogic($certificate);
+            return redirect()->route('admin.certificates.index')->with('success', 'Certificate generated and emailed successfully to ' . $certificate->recipient_email);
+        } catch (\Exception $e) {
+            \Log::error('Mail Error: ' . $e->getMessage());
+            return redirect()->route('admin.certificates.index')->with('success', 'Certificate saved! However, the email could not be sent. Please check your Mail Setup. Error: ' . $e->getMessage());
+        }
+    }
+
+    private function sendEmailLogic(Certificate $certificate)
+    {
+        // Generate PDF
+        $qrData = url('/verify/certificate/' . $certificate->certificate_number);
+        $qrCode = \SimpleSoftwareIO\QrCode\Facades\QrCode::size(100)->format('svg')->generate($qrData);
+        
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.certificates.templates.' . $certificate->template_id, compact('certificate', 'qrCode'))
+                ->setPaper('a4', 'landscape');
+        
+        $pdfContent = $pdf->output();
+        $fileName = $certificate->certificate_number . '.pdf';
+        
+        // Send email
+        \Illuminate\Support\Facades\Mail::to($certificate->recipient_email)->send(
+            new \App\Mail\CertificateMail($certificate, $pdfContent, $fileName)
+        );
+    }
+
+    public function sendEmail(Certificate $certificate)
+    {
+        try {
+            $this->sendEmailLogic($certificate);
+            return redirect()->route('admin.certificates.index')->with('success', 'Certificate emailed successfully to ' . $certificate->recipient_email);
+        } catch (\Exception $e) {
+            return redirect()->route('admin.certificates.index')->with('error', 'Failed to send email: ' . $e->getMessage());
+        }
     }
 
     public function show(Certificate $certificate)
@@ -68,30 +103,5 @@ class CertificateController extends Controller
     {
         $certificate->delete();
         return redirect()->route('admin.certificates.index')->with('success', 'Certificate record deleted.');
-    }
-
-    public function sendEmail(Certificate $certificate)
-    {
-        try {
-            // Generate PDF
-            $qrData = url('/verify/certificate/' . $certificate->certificate_number);
-            $qrCode = \SimpleSoftwareIO\QrCode\Facades\QrCode::size(100)->format('svg')->generate($qrData);
-            
-            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.certificates.templates.' . $certificate->template_id, compact('certificate', 'qrCode'))
-                    ->setPaper('a4', 'landscape');
-            
-            $pdfContent = $pdf->output();
-            $fileName = $certificate->certificate_number . '.pdf';
-            
-            // Send email
-            \Illuminate\Support\Facades\Mail::to($certificate->recipient_email)->send(
-                new \App\Mail\CertificateMail($certificate, $pdfContent, $fileName)
-            );
-            
-            return redirect()->route('admin.certificates.index')->with('success', 'Certificate emailed successfully to ' . $certificate->recipient_email);
-            
-        } catch (\Exception $e) {
-            return redirect()->route('admin.certificates.index')->with('error', 'Failed to send email: ' . $e->getMessage());
-        }
     }
 }
