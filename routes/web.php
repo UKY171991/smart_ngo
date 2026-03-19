@@ -101,4 +101,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/settings', [App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
     Route::get('/settings/website-qr', [App\Http\Controllers\Admin\SettingController::class, 'websiteQr'])->name('settings.qr');
     Route::get('/settings/footer-links', [App\Http\Controllers\Admin\SettingController::class, 'footerLinks'])->name('settings.footer');
+    Route::get('/settings/mail', [App\Http\Controllers\Admin\SettingController::class, 'mailSettings'])->name('settings.mail');
+    Route::post('/settings/mail', [App\Http\Controllers\Admin\SettingController::class, 'updateMailSettings'])->name('settings.mail.update');
 });

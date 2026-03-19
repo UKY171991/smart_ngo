@@ -49,18 +49,27 @@ class DashboardController extends Controller
             ];
 
             foreach ($directories as $dir) {
-                if (!\Illuminate\Support\Facades\Storage::disk('public')->exists($dir)) {
-                    \Illuminate\Support\Facades\Storage::disk('public')->makeDirectory($dir);
+                $absoluteDir = storage_path('app/public/' . $dir);
+                if (!file_exists($absoluteDir)) {
+                    mkdir($absoluteDir, 0755, true);
                 }
+                // Ensure permissions
+                if (PHP_OS_FAMILY !== 'Windows') {
+                    chmod($absoluteDir, 0755);
+                }
+            }
+
+            $storagePublic = storage_path('app/public');
+            if (PHP_OS_FAMILY !== 'Windows') {
+                 chmod($storagePublic, 0755);
             }
 
             $publicPath = public_path('storage');
 
             // Force recreate symlink if broken or directory
             if (file_exists($publicPath) || is_link($publicPath)) {
-                // If it exists, we might need to delete it first if it's broken
                 if (PHP_OS_FAMILY === 'Windows') {
-                    if (is_dir($publicPath)) {
+                    if (is_dir($publicPath) && !is_link($publicPath)) {
                         shell_exec("rd /s /q \"$publicPath\"");
                     } else {
                         shell_exec("del /f /q \"$publicPath\"");
@@ -80,7 +89,7 @@ class DashboardController extends Controller
                 if (PHP_OS_FAMILY === 'Windows') {
                     shell_exec("mklink /J \"$link\" \"$target\"");
                 } else {
-                    symlink($target, $link);
+                    @symlink($target, $link);
                 }
             }
 

@@ -351,6 +351,9 @@
             <a href="{{ route('admin.settings.footer') }}" class="nav-link {{ Route::is('admin.settings.footer') ? 'active' : '' }}">
                 <i class="fas fa-link"></i> Footer Links
             </a>
+            <a href="{{ route('admin.settings.mail') }}" class="nav-link {{ Route::is('admin.settings.mail') ? 'active' : '' }}">
+                <i class="fas fa-envelope-open-text"></i> Mail Setup
+            </a>
 
             <div class="mt-4 p-3 footer-logout">
                 <form action="{{ route('logout') }}" method="POST">

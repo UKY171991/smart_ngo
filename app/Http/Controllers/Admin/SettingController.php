@@ -78,4 +78,21 @@ class SettingController extends Controller
         $settings = Setting::pluck('value', 'setting_key')->all();
         return view('admin.settings.index', compact('settings'));
     }
+
+    public function mailSettings()
+    {
+        $settings = Setting::pluck('value', 'setting_key')->toArray();
+        return view('admin.settings.mail', compact('settings'));
+    }
+
+    public function updateMailSettings(Request $request)
+    {
+        $data = $request->except(['_token']);
+
+        foreach ($data as $key => $value) {
+            Setting::updateOrCreate(['setting_key' => $key], ['value' => $value]);
+        }
+
+        return redirect()->back()->with('success', 'Mail settings updated successfully!');
+    }
 }
