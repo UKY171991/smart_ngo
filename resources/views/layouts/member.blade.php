@@ -43,6 +43,7 @@
             border-right: 1px solid #eee;
             transition: all 0.3s;
             z-index: 1000;
+            overflow-y: auto;
         }
 
         #sidebar .sidebar-header {
@@ -143,6 +144,10 @@
             <a href="{{ route('member.enquiries') }}" class="nav-link {{ Route::is('member.enquiries') ? 'active' : '' }}">
                 <i class="fas fa-question-circle"></i> Support Enquiries
             </a>
+            
+            <a href="{{ route('member.referrals') }}" class="nav-link {{ Route::is('member.referrals') ? 'active' : '' }}">
+                <i class="fas fa-users"></i> Volunteer Joining
+            </a>
 
             <div class="nav-category">Resources</div>
             
@@ -154,6 +159,9 @@
             </a>
             <a href="{{ route('member.appointment-letter') }}" target="_blank" class="nav-link">
                 <i class="fas fa-file-contract"></i> Appointment Letter
+            </a>
+            <a href="{{ route('member.certificates') }}" class="nav-link {{ Route::is('member.certificates') ? 'active' : '' }}">
+                <i class="fas fa-certificate"></i> My Certificates
             </a>
 
             <div class="mt-5 p-3">
@@ -181,10 +189,12 @@
             <div class="d-flex align-items-center">
                 <div class="dropdown">
                     <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=0d6efd&color=fff" class="rounded-circle me-2 shadow-sm" width="35" alt="User">
+                        <img src="{{ auth()->user()->avatar ? (filter_var(auth()->user()->avatar, FILTER_VALIDATE_URL) ? auth()->user()->avatar : Storage::url(auth()->user()->avatar)) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=0d6efd&color=fff' }}" 
+                             class="rounded-circle me-2 shadow-sm" width="35" height="35" alt="User" style="object-fit: cover;">
                         <span class="d-none d-md-inline fw-semibold text-dark">{{ auth()->user()->name }}</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+                        <li><a class="dropdown-item" href="{{ route('member.profile') }}"><i class="fas fa-user-circle me-2"></i> My Profile</a></li>
                         <li><a class="dropdown-item" href="{{ route('home') }}"><i class="fas fa-home me-2"></i> Back to Website</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li>

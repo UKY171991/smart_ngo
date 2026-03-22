@@ -49,6 +49,12 @@ Route::middleware(['auth', 'member'])->prefix('member')->group(function () {
     Route::get('/appointment-letter', [MemberDashboard::class, 'appointmentLetter'])->name('member.appointment-letter');
     Route::get('/enquiries', [MemberDashboard::class, 'enquiries'])->name('member.enquiries');
     Route::post('/enquiries', [MemberDashboard::class, 'postEnquiry'])->name('member.enquiries.post');
+    Route::get('/referrals', [MemberDashboard::class, 'referrals'])->name('member.referrals');
+    Route::get('/certificates', [MemberDashboard::class, 'certificates'])->name('member.certificates');
+    Route::get('/certificates/{certificate}', [MemberDashboard::class, 'downloadCertificate'])->name('member.certificates.download');
+    Route::get('/profile', [MemberDashboard::class, 'profile'])->name('member.profile');
+    Route::post('/profile', [MemberDashboard::class, 'updateProfile'])->name('member.profile.update');
+    Route::post('/profile/password', [MemberDashboard::class, 'updatePassword'])->name('member.password.update');
 });
 
 // Donation Routes
@@ -62,6 +68,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('dashboard');
     Route::post('/clear-cache', [AdminDashboard::class, 'clearCache'])->name('clear-cache');
     Route::post('/fix-folders', [AdminDashboard::class, 'fixSystemFolders'])->name('fix-folders');
+    Route::get('/report/export', [AdminDashboard::class, 'exportReport'])->name('report.export');
     
     // Management Modules
     Route::resource('members', App\Http\Controllers\Admin\MemberController::class);
@@ -103,4 +110,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/settings/footer-links', [App\Http\Controllers\Admin\SettingController::class, 'footerLinks'])->name('settings.footer');
     Route::get('/settings/mail', [App\Http\Controllers\Admin\SettingController::class, 'mailSettings'])->name('settings.mail');
     Route::post('/settings/mail', [App\Http\Controllers\Admin\SettingController::class, 'updateMailSettings'])->name('settings.mail.update');
+    Route::get('/settings/certificate', [App\Http\Controllers\Admin\SettingController::class, 'certificateSettings'])->name('settings.certificate');
+    Route::post('/settings/certificate', [App\Http\Controllers\Admin\SettingController::class, 'updateCertificateSettings'])->name('settings.certificate.update');
 });

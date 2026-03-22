@@ -1,91 +1,140 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <style>
         @page { margin: 0; }
-        body { font-family: 'Helvetica', 'Arial', sans-serif; background: #fff; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Helvetica', 'Arial', sans-serif; 
+            background: #fff; 
+            margin: 0; 
+            padding: 0;
+            color: #333;
+        }
         .id-card {
-            width: 240pt;
-            height: 380pt;
-            background: linear-gradient(135deg, #cc0000 0%, #880000 100%);
-            color: #fff;
+            width: 242pt;
+            height: 382pt;
+            background: #ffffff;
             position: relative;
             overflow: hidden;
-            border: 2px solid #550000;
+            border: 1pt solid #ddd;
+            margin: 20pt auto;
         }
         .header {
             text-align: center;
-            padding: 20pt 10pt;
-            background: rgba(0, 0, 0, 0.2);
+            padding: 15pt 10pt;
+            background-color: #0156b3; 
+            color: #ffffff;
         }
-        .logo { font-size: 18pt; font-weight: bold; letter-spacing: 2pt; }
-        .tagline { font-size: 8pt; opacity: 0.8; margin-top: 5pt; }
+        .logo { font-size: 18pt; font-weight: bold; letter-spacing: 1pt; }
+        .tagline { font-size: 8pt; opacity: 0.9; margin-top: 5pt; }
+        
         .photo-area {
-            margin-top: 20pt;
+            margin-top: 15pt;
             text-align: center;
         }
         .photo {
-            width: 100pt;
-            height: 100pt;
+            width: 85pt;
+            height: 85pt;
             border-radius: 50%;
-            border: 4pt solid #fff;
-            background: #fff;
-            object-fit: cover;
+            border: 3pt solid #0156b3;
+            background: #eee;
         }
+        
         .info {
             text-align: center;
-            margin-top: 15pt;
+            margin-top: 10pt;
             padding: 0 10pt;
         }
-        .name { font-size: 16pt; font-weight: bold; margin-bottom: 5pt; }
+        .name { 
+            font-size: 16pt; 
+            font-weight: bold; 
+            margin-bottom: 5pt; 
+            color: #000;
+        }
         .designation { 
             font-size: 10pt; 
-            background: #fff; 
-            color: #cc0000; 
+            background: #0156b3; 
+            color: #ffffff; 
             display: inline-block; 
-            padding: 3pt 10pt; 
-            border-radius: 15pt;
+            padding: 3pt 15pt; 
+            border-radius: 20pt;
             font-weight: bold;
             margin-bottom: 15pt;
+            text-transform: uppercase;
         }
+        
         .details {
-            font-size: 8pt;
+            font-size: 9pt;
             text-align: left;
             padding: 10pt;
-            background: rgba(255, 255, 255, 0.1);
+            background: #f8f9fa;
             border-radius: 10pt;
             margin: 0 15pt;
+            border: 1pt solid #eee;
         }
-        .detail-row { margin-bottom: 5pt; border-bottom: 1pt solid rgba(255, 255, 255, 0.1); padding-bottom: 2pt; }
+        .detail-row { 
+            margin-bottom: 6pt; 
+            border-bottom: 0.5pt solid #eee; 
+            padding-bottom: 3pt; 
+        }
+        .detail-row:last-child { border-bottom: none; }
+        .label { color: #666; font-weight: bold; width: 60pt; display: inline-block; }
+        .value { color: #000; font-weight: bold; }
+        
         .qr-area {
             position: absolute;
-            bottom: 20pt;
+            bottom: 30pt;
             right: 20pt;
             background: #fff;
-            padding: 5pt;
-            border-radius: 5pt;
+            padding: 4pt;
+            border: 1pt solid #eee;
         }
+        
         .footer {
             position: absolute;
             bottom: 0;
             width: 100%;
             text-align: center;
-            padding: 5pt 0;
-            background: #000;
-            font-size: 7pt;
+            padding: 8pt 0;
+            background: #333;
+            color: #ffffff;
+            font-size: 8pt;
+            font-weight: bold;
             letter-spacing: 1pt;
+        }
+        
+        .accent {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5pt;
+            background: #0d6efd;
         }
     </style>
 </head>
 <body>
     <div class="id-card">
+        <div class="accent"></div>
         <div class="header">
-            <div class="logo">SAMRAT FOUNDATION</div>
-            <div class="tagline">Empowering Lives, Building Futures</div>
+            <div class="logo">{{ $siteSettings['site_name'] ?? 'Smart NGO' }}</div>
+            <div class="tagline">{{ $siteSettings['site_tagline'] ?? 'Empowering Lives, Building Futures' }}</div>
         </div>
         
         <div class="photo-area">
-            <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&size=200&background=fff&color=cc0000&bold=true" class="photo">
+            @php
+                $avatarUrl = $user->avatar ? (filter_var($user->avatar, FILTER_VALIDATE_URL) ? $user->avatar : public_path('storage/' . $user->avatar)) : null;
+                if ($user->avatar && !filter_var($user->avatar, FILTER_VALIDATE_URL) && !file_exists($avatarUrl)) {
+                    $avatarUrl = null;
+                }
+            @endphp
+            
+            @if($avatarUrl && !filter_var($user->avatar, FILTER_VALIDATE_URL))
+                <img src="data:image/png;base64,{{ base64_encode(file_get_contents($avatarUrl)) }}" class="photo">
+            @else
+                <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&size=200&background=0d6efd&color=fff&bold=true" class="photo">
+            @endif
         </div>
         
         <div class="info">
@@ -94,9 +143,10 @@
         </div>
         
         <div class="details">
-            <div class="detail-row"><strong>ID:</strong> NGO-{{ str_pad($user->id, 5, '0', STR_PAD_LEFT) }}</div>
-            <div class="detail-row"><strong>PHONE:</strong> {{ $user->phone }}</div>
-            <div class="detail-row"><strong>JOINED:</strong> {{ $user->created_at->format('M Y') }}</div>
+            <div class="detail-row"><span class="label">MEMBER ID:</span> <span class="value">NGO-{{ str_pad($user->id, 5, '0', STR_PAD_LEFT) }}</span></div>
+            <div class="detail-row"><span class="label">PHONE:</span> <span class="value">{{ $user->phone ?? 'N/A' }}</span></div>
+            <div class="detail-row"><span class="label">EMAIL:</span> <span class="value" style="font-size: 8pt;">{{ $user->email }}</span></div>
+            <div class="detail-row"><span class="label">JOINED:</span> <span class="value">{{ $user->created_at->format('d M, Y') }}</span></div>
         </div>
         
         <div class="qr-area">
@@ -104,7 +154,7 @@
         </div>
         
         <div class="footer">
-            OFFICIAL IDENTITY CARD
+            OFFICIAL MEMBER IDENTITY CARD
         </div>
     </div>
 </body>

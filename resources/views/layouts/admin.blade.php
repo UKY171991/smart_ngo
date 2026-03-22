@@ -337,8 +337,11 @@
             <a href="{{ route('admin.enquiries.index') }}" class="nav-link {{ Route::is('admin.enquiries.*') ? 'active' : '' }}">
                 <i class="fas fa-question-circle"></i> Enquiries
             </a>
-            <a href="{{ route('admin.certificates.index') }}" class="nav-link {{ Route::is('admin.certificates.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.certificates.index') }}" class="nav-link {{ Route::is('admin.certificates.index') ? 'active' : '' }}">
                 <i class="fas fa-certificate"></i> Certificates
+            </a>
+            <a href="{{ route('admin.settings.certificate') }}" class="nav-link {{ Route::is('admin.settings.certificate') ? 'active' : '' }}">
+                <i class="fas fa-palette"></i> Certificate Design
             </a>
             <div class="nav-category">System</div>
             
@@ -380,8 +383,8 @@
             <div class="d-flex align-items-center">
                 <div class="dropdown">
                     <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
-                        <img src="{{ auth()->user()->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=4e73df&color=fff' }}" 
-                             class="rounded-circle me-2" width="35" height="35" alt="Admin" style="object-fit: cover;">
+                        <img src="{{ auth()->user()->avatar ? (filter_var(auth()->user()->avatar, FILTER_VALIDATE_URL) ? auth()->user()->avatar : Storage::url(auth()->user()->avatar)) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=4e73df&color=fff' }}" 
+                             class="rounded-circle shadow-sm border me-2" width="40" height="40" alt="Admin" style="object-fit: cover;">
                         <span class="d-none d-md-inline fw-semibold">{{ auth()->user()->name }}</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow border-0">

@@ -59,7 +59,7 @@
                 <h3 class="fw-bold mb-0">{{ $stats['pending_enquiries'] }}</h3>
             </div>
             <div class="px-3 pb-3">
-                <a href="#" class="text-warning text-decoration-none x-small fw-bold">View and reply →</a>
+                <a href="{{ route('admin.enquiries.index') }}" class="text-warning text-decoration-none x-small fw-bold">View and reply →</a>
             </div>
         </div>
     </div>
@@ -164,10 +164,12 @@
                         </a>
                     </div>
                     <div class="col-6 col-md-3">
-                        <div class="p-3 border rounded-4 text-center hover-shadow transition">
-                            <i class="fas fa-file-invoice text-secondary fs-3 mb-2"></i>
-                            <p class="mb-0 small fw-bold">Export Report</p>
-                        </div>
+                        <a href="{{ route('admin.report.export') }}" class="text-decoration-none">
+                            <div class="p-3 border rounded-4 text-center hover-shadow transition">
+                                <i class="fas fa-file-invoice text-secondary fs-3 mb-2"></i>
+                                <p class="mb-0 small fw-bold text-dark">Export Report</p>
+                            </div>
+                        </a>
                     </div>
                 </div>
                 
@@ -208,7 +210,7 @@
                 @endforelse
                 
                 <div class="d-grid mt-2">
-                    <a href="#" class="btn btn-light btn-sm fw-bold">View All Feed</a>
+                    <a href="{{ route('admin.activities.index') }}" class="btn btn-light btn-sm fw-bold">View All Feed</a>
                 </div>
             </div>
         </div>

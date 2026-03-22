@@ -98,4 +98,24 @@ class DashboardController extends Controller
             return back()->with('error', 'System fix failed: ' . $e->getMessage());
         }
     }
+
+    public function exportReport()
+    {
+        $stats = [
+            'total_members' => User::where('role', 'member')->count(),
+            'total_donations' => Donation::where('status', 'completed')->sum('amount'),
+            'total_campaigns' => \App\Models\Campaign::count(),
+            'pending_enquiries' => \App\Models\Enquiry::where('status', 'pending')->count(),
+            'recent_donations' => Donation::with('user')->where('status', 'completed')->latest()->take(10)->get(),
+            'top_members' => User::where('role', 'member')->withCount('referrals')->orderBy('referrals_count', 'desc')->take(5)->get(),
+        ];
+        
+        $siteSettings = \App\Models\Setting::pluck('value', 'setting_key')->toArray();
+        $generated_at = now()->format('d M, Y H:i A');
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.pdfs.report', compact('stats', 'siteSettings', 'generated_at'))
+                ->setPaper('a4', 'portrait');
+
+        return $pdf->download('NGO-REPORT-' . now()->format('Y-m-d') . '.pdf');
+    }
 }

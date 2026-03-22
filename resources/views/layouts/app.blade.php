@@ -81,12 +81,19 @@
             .navbar-nav { align-items: stretch !important; }
             .navbar-nav.gap-3 { 
                 flex-direction: column !important; 
-                margin-top: 20px !important; 
+                margin-top: 15px !important; 
                 padding: 15px 0 0 0;
                 border-top: 1px solid rgba(255,255,255,0.05);
                 gap: 12px !important;
             }
-            .btn-donate-nav, .btn-join-nav { width: 100%; text-align: center; padding: 12px !important; }
+            .btn-donate-nav, .btn-join-nav { 
+                width: 100%; 
+                text-align: center; 
+                padding: 12px 20px !important; 
+                display: block;
+                text-decoration: none !important;
+                margin-bottom: 5px;
+            }
 
             /* Dropdown refinements for mobile */
             .navbar-nav .dropdown-menu { 
@@ -105,11 +112,33 @@
         }
         
         /* Buttons */
-        .btn-donate-nav { background-color: var(--primary-color); color: #fff; border-radius: 50px; padding: 8px 24px; font-weight: bold; border: 2px solid var(--primary-color); transition: all 0.3s; text-transform: uppercase; font-size: 0.9rem; }
-        .btn-donate-nav:hover { background-color: transparent; color: var(--primary-color); box-shadow: 0 0 15px rgba(204, 0, 0, 0.5); }
+        .btn-donate-nav { 
+            background-color: var(--primary-color); 
+            color: #fff !important; 
+            border-radius: 50px; 
+            padding: 8px 24px; 
+            font-weight: bold; 
+            border: 2px solid var(--primary-color); 
+            transition: all 0.3s; 
+            text-transform: uppercase; 
+            font-size: 0.9rem;
+            text-decoration: none !important;
+        }
+        .btn-donate-nav:hover { background-color: transparent; color: var(--primary-color) !important; box-shadow: 0 0 15px rgba(204, 0, 0, 0.5); }
         
-        .btn-join-nav { background-color: transparent; color: #fff; border-radius: 50px; padding: 8px 24px; font-weight: bold; border: 2px solid rgba(255,255,255,0.5); transition: all 0.3s; text-transform: uppercase; font-size: 0.9rem; }
-        .btn-join-nav:hover { border-color: #fff; background-color: rgba(255,255,255,0.1); }
+        .btn-join-nav { 
+            background-color: transparent; 
+            color: #fff !important; 
+            border-radius: 50px; 
+            padding: 8px 24px; 
+            font-weight: bold; 
+            border: 2px solid rgba(255,255,255,0.5); 
+            transition: all 0.3s; 
+            text-transform: uppercase; 
+            font-size: 0.9rem;
+            text-decoration: none !important;
+        }
+        .btn-join-nav:hover { border-color: #fff; background-color: rgba(255,255,255,0.1); color: #fff !important; }
         
         .animate-up { transition: 0.3s; }
         .animate-up:hover { transform: translateY(-5px); }

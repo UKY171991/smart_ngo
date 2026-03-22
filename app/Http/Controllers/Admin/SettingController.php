@@ -95,4 +95,44 @@ class SettingController extends Controller
 
         return redirect()->back()->with('success', 'Mail settings updated successfully!');
     }
+
+    public function certificateSettings()
+    {
+        $settings = Setting::pluck('value', 'setting_key')->toArray();
+        return view('admin.settings.certificate', compact('settings'));
+    }
+
+    public function updateCertificateSettings(Request $request)
+    {
+        $request->validate([
+            'certificate_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'certificate_signature' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'certificate_stamp' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        $data = $request->except(['_token', 'certificate_logo', 'certificate_signature', 'certificate_stamp']);
+
+        foreach ($data as $key => $value) {
+            Setting::updateOrCreate(['setting_key' => $key], ['value' => $value]);
+        }
+
+        // Handle File Uploads
+        $files = ['certificate_logo', 'certificate_signature', 'certificate_stamp'];
+        foreach ($files as $fileKey) {
+            if ($request->hasFile($fileKey)) {
+                // Delete old file if exists
+                $oldFile = Setting::where('setting_key', $fileKey)->first();
+                if ($oldFile && $oldFile->value) {
+                    $oldPath = $oldFile->value;
+                    if (Storage::disk('public')->exists($oldPath)) {
+                        Storage::disk('public')->delete($oldPath);
+                    }
+                }
+                $path = $request->file($fileKey)->store('brand', 'public');
+                Setting::updateOrCreate(['setting_key' => $fileKey], ['value' => $path]);
+            }
+        }
+
+        return redirect()->back()->with('success', 'Certificate settings updated successfully!');
+    }
 }

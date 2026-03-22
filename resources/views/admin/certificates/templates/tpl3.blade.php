@@ -3,50 +3,89 @@
 <head>
     <style>
         @page { size: A4 landscape; margin: 0; }
-        body { font-family: 'Helvetica', sans-serif; background: #fff; margin: 0; padding: 15px; color: #333; overflow: hidden; }
-        .border { border: 8px solid #cc0000; padding: 10px; height: 530px; position: relative; border-radius: 8px; box-sizing: border-box; }
-        .inner-border { border: 1px solid #caa85b; padding: 25px; height: 508px; text-align: center; border-radius: 4px; box-sizing: border-box; }
-        .cert-no { font-size: 8pt; color: #999; margin-bottom: 10px; text-align: right; }
-        .logo { font-size: 16pt; font-weight: bold; color: #cc0000; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1.5px; }
-        .title { font-size: 20pt; font-family: 'Georgia', serif; font-style: italic; color: #caa85b; margin: 15px 0; }
-        .subtitle { font-size: 10pt; margin-bottom: 25px; color: #666; }
-        .recipient { font-size: 18pt; font-weight: bold; border-bottom: 1px solid #caa85b; display: inline-block; padding: 0 30px 3px; margin-bottom: 15px; color: #222; }
-        .reason { font-size: 10pt; line-height: 1.4; max-width: 80%; margin: 0 auto; color: #444; height: 45px; }
-        .footer { position: absolute; bottom: 80px; width: 100%; left: 0; }
-        .signature-table { width: 80%; margin: 0 auto; }
-        .sign-line { border-top: 1px solid #333; width: 140px; margin: 0 auto; padding-top: 5px; font-weight: bold; font-size: 9pt; }
-        .qr-area { position: absolute; bottom: 30px; right: 40px; text-align: center; }
-        .qr-area img { width: 55px !important; height: 55px !important; }
+        body { font-family: 'Helvetica', 'Arial', sans-serif; background: #fff; margin: 0; padding: 25px; color: #1a1a1a; }
+        .outer-wrapper { border: 15px solid {{ $siteSettings['certificate_border_color'] ?? '#0D6EFD' }}; height: 535px; padding: 5px; box-sizing: border-box; background: #fff; position: relative; }
+        .inner-content { border: 2pt solid #caa85b; height: 495px; padding: 25px 35px; box-sizing: border-box; text-align: center; }
+        .cert-no { font-size: 8pt; color: #999; margin-bottom: 2px; text-align: left; }
+        
+        .header { margin-bottom: 8px; }
+        .logo-img { height: 50px; margin-bottom: 2px; }
+        .ngo-name { font-size: 18pt; font-weight: 800; color: #111; margin: 0; text-transform: uppercase; }
+        .tagline { font-size: 8pt; color: {{ $siteSettings['certificate_border_color'] ?? '#0D6EFD' }}; font-weight: bold; margin-top: 1px; text-transform: uppercase; letter-spacing: 1.5px; }
+        
+        .title { font-size: 20pt; font-weight: 300; color: #caa85b; margin: 10px 0 5px; font-family: 'Times New Roman', serif; text-transform: uppercase; letter-spacing: 2px; }
+        .subtitle { font-size: 10pt; margin-bottom: 12px; color: #666; font-style: italic; }
+        
+        .recipient { font-size: 26pt; font-weight: 900; color: #000; border-bottom: 3pt solid #caa85b; display: inline-block; padding: 0 40px 1px; margin-bottom: 12px; }
+        
+        .reason { font-size: 11pt; line-height: 1.4; max-width: 85%; margin: 5px auto 10px; color: #444; min-height: 45px; font-weight: 300; }
+        
+        .footer { width: 95%; margin: 5px auto 0; }
+        .signature-table { width: 100%; }
+        .signature-table td { vertical-align: bottom; text-align: center; width: 50%; }
+        .signature-img { height: 45px; margin-bottom: -10px; display: block; margin: 0 auto; position: relative; z-index: 2; }
+        .stamp-img { height: 85px; margin: 0 auto; opacity: 1; display: block; }
+        .sign-line { border-top: 2pt solid {{ $siteSettings['certificate_border_color'] ?? '#0D6EFD' }}; width: 170px; margin: 0 auto; padding-top: 5px; font-weight: bold; font-size: 10pt; color: #1a1a1a; text-transform: uppercase; }
+        
+        .qr-area { position: absolute; top: 30px; right: 40px; text-align: center; z-index: 10; }
+        .qr-area img { width: 60px !important; height: 60px !important; border: 1pt solid #ddd; padding: 2px; background: #fff; }
     </style>
 </head>
 <body>
-    <div class="border">
-        <div class="inner-border">
+    <div class="outer-wrapper">
+        <div class="inner-content">
             <div class="cert-no">NO: {{ $certificate->certificate_number }}</div>
-            <div class="logo">SAMRAT FOUNDATION TRUST</div>
             
-            <div class="title">Certificate of {{ ucfirst($certificate->type) }}</div>
+            <div class="header">
+                @php
+                    $finalLogo = $siteSettings['certificate_logo'] ?? $siteSettings['logo'] ?? null;
+                @endphp
+                @if($finalLogo)
+                    <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('storage/' . $finalLogo))) }}" class="logo-img">
+                @endif
+                <div class="ngo-name">{{ $siteSettings['site_name'] ?? 'Smart NGO' }}</div>
+                <div class="tagline">{{ $siteSettings['certificate_tagline'] ?? 'Empowering Lives, Building Futures' }}</div>
+            </div>
             
-            <div class="subtitle">This is proudly presented to</div>
+            <div class="title">Certificate of Merit</div>
+            <div class="subtitle">This certificate is proudly awarded to</div>
             
             <div class="recipient">{{ $certificate->recipient_name }}</div>
             
             <div class="reason">
-                In recognition of {{ strtolower($certificate->metadata['description'] ?? '') ?: 'outstanding dedication and service.' }}
+                {{ strtolower($certificate->metadata['description'] ?? '') ?: 'In appreciation for your tireless commitment, remarkable energy, and high level of professionalism in serving the community through our various initiatives.' }}
             </div>
             
             <div class="footer">
-                <table class="signature-table" border="0" cellspacing="0" cellpadding="0">
+                <table class="signature-table" border="0">
                     <tr>
-                        <td align="center"><div class="sign-line">President</div></td>
-                        <td align="center"><div class="sign-line">Secretary</div></td>
+                        <td>
+                            <div class="sign-area">
+                                @if(isset($siteSettings['certificate_signature']))
+                                    <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('storage/' . $siteSettings['certificate_signature']))) }}" class="signature-img">
+                                @else
+                                    <div style="height: 45px;"></div>
+                                @endif
+                                <div class="sign-line">{{ $siteSettings['cert_sign_title_1'] ?? 'President' }}</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="sign-area">
+                                @if(isset($siteSettings['certificate_stamp']))
+                                    <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('storage/' . $siteSettings['certificate_stamp']))) }}" class="stamp-img">
+                                @else
+                                    <div style="height: 45px;"></div>
+                                @endif
+                                <div class="sign-line">{{ $siteSettings['cert_sign_title_2'] ?? 'Secretary' }}</div>
+                            </div>
+                        </td>
                     </tr>
                 </table>
             </div>
             
             <div class="qr-area">
                 <img src="data:image/svg+xml;base64,{{ base64_encode($qrCode) }}" alt="QR">
-                <div style="font-size:6pt; margin-top:2px;">VERIFY</div>
+                <div style="font-size:7pt; margin-top:3px; font-weight:bold; color:#666;">VERIFY</div>
             </div>
         </div>
     </div>

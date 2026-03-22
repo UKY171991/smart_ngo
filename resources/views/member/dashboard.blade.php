@@ -20,7 +20,8 @@
         <div class="col-lg-4 mb-4">
             <div class="card border-0 shadow-sm rounded-4 text-center p-4">
                 <div class="mb-3">
-                    <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&size=128&background=0D6EFD&color=fff&bold=true" class="rounded-circle shadow-sm" alt="Profile">
+                    <img src="{{ $user->avatar ? (filter_var($user->avatar, FILTER_VALIDATE_URL) ? $user->avatar : Storage::url($user->avatar)) : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&size=128&background=0D6EFD&color=fff&bold=true' }}" 
+                         class="rounded-circle shadow-sm" alt="Profile" style="width: 128px; height: 128px; object-fit: cover;">
                 </div>
                 <h4 class="fw-bold mb-0 text-dark">{{ $user->name }}</h4>
                 <div class="badge bg-primary-soft text-primary px-3 py-2 rounded-pill mb-3 mt-2">{{ $user->designation->title ?? 'General Member' }}</div>
@@ -38,7 +39,7 @@
                 
                 <div class="d-grid gap-2">
                     <a href="{{ route('member.id-card') }}" class="btn btn-primary rounded-pill py-2 fw-bold"><i class="fas fa-id-card me-2"></i> View ID Card</a>
-                    <button class="btn btn-outline-light text-dark rounded-pill py-2 fw-bold"><i class="fas fa-user-edit me-2"></i> Edit Profile</button>
+                    <a href="{{ route('member.profile') }}" class="btn btn-outline-light text-dark rounded-pill py-2 fw-bold"><i class="fas fa-user-edit me-2"></i> Edit Profile</a>
                 </div>
             </div>
             

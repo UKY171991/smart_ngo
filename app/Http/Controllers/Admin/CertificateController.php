@@ -55,8 +55,9 @@ class CertificateController extends Controller
         // Generate PDF
         $qrData = url('/verify/certificate/' . $certificate->certificate_number);
         $qrCode = \SimpleSoftwareIO\QrCode\Facades\QrCode::size(100)->format('svg')->generate($qrData);
+        $siteSettings = \App\Models\Setting::pluck('value', 'setting_key')->toArray();
         
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.certificates.templates.' . $certificate->template_id, compact('certificate', 'qrCode'))
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.certificates.templates.' . $certificate->template_id, compact('certificate', 'qrCode', 'siteSettings'))
                 ->setPaper('a4', 'landscape');
         
         $pdfContent = $pdf->output();
@@ -82,8 +83,9 @@ class CertificateController extends Controller
     {
         $qrData = url('/verify/certificate/' . $certificate->certificate_number);
         $qrCode = \SimpleSoftwareIO\QrCode\Facades\QrCode::size(100)->format('svg')->generate($qrData);
+        $siteSettings = \App\Models\Setting::pluck('value', 'setting_key')->toArray();
         
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.certificates.templates.' . $certificate->template_id, compact('certificate', 'qrCode'))
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.certificates.templates.' . $certificate->template_id, compact('certificate', 'qrCode', 'siteSettings'))
                 ->setPaper('a4', 'landscape');
         
         return $pdf->stream($certificate->certificate_number . '.pdf');
@@ -91,12 +93,32 @@ class CertificateController extends Controller
 
     public function edit(Certificate $certificate)
     {
-        return redirect()->route('admin.certificates.index')->with('error', 'Certificates cannot be edited once issued.');
+        $users = \App\Models\User::where('status', 'active')->get();
+        // Templates are tpl1 to tpl6
+        $templates = ['tpl1', 'tpl2', 'tpl3', 'tpl4', 'tpl5', 'tpl6'];
+        return view('admin.certificates.edit', compact('certificate', 'users', 'templates'));
     }
 
     public function update(Request $request, Certificate $certificate)
     {
-        return redirect()->route('admin.certificates.index');
+        $validated = $request->validate([
+            'recipient_name' => 'required|string|max:255',
+            'recipient_email' => 'required|email',
+            'type' => 'required|in:membership,achievement,internship,visitor',
+            'template_id' => 'required|string',
+            'metadata' => 'nullable|string',
+        ]);
+
+        $certificate->update([
+            'user_id' => $request->user_id,
+            'recipient_name' => $validated['recipient_name'],
+            'recipient_email' => $validated['recipient_email'],
+            'type' => $validated['type'],
+            'template_id' => $validated['template_id'],
+            'metadata' => ['description' => $validated['metadata']],
+        ]);
+
+        return redirect()->route('admin.certificates.index')->with('success', 'Certificate updated successfully.');
     }
 
     public function destroy(Certificate $certificate)
