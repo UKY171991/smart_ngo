@@ -135,4 +135,44 @@ class SettingController extends Controller
 
         return redirect()->back()->with('success', 'Certificate settings updated successfully!');
     }
+
+    public function receiptSettings()
+    {
+        $settings = Setting::pluck('value', 'setting_key')->toArray();
+        return view('admin.settings.receipt', compact('settings'));
+    }
+
+    public function updateReceiptSettings(Request $request)
+    {
+        $request->validate([
+            'receipt_signature' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'receipt_stamp' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'receipt_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        $data = $request->except(['_token', 'receipt_signature', 'receipt_stamp', 'receipt_logo']);
+
+        foreach ($data as $key => $value) {
+            Setting::updateOrCreate(['setting_key' => $key], ['value' => $value]);
+        }
+
+        // Handle File Uploads
+        $files = ['receipt_signature', 'receipt_stamp', 'receipt_logo'];
+        foreach ($files as $fileKey) {
+            if ($request->hasFile($fileKey)) {
+                // Delete old file if exists
+                $oldFile = Setting::where('setting_key', $fileKey)->first();
+                if ($oldFile && $oldFile->value) {
+                    $oldPath = $oldFile->value;
+                    if (Storage::disk('public')->exists($oldPath)) {
+                        Storage::disk('public')->delete($oldPath);
+                    }
+                }
+                $path = $request->file($fileKey)->store($fileKey == 'receipt_signature' ? 'signatures' : 'brand', 'public');
+                Setting::updateOrCreate(['setting_key' => $fileKey], ['value' => $path]);
+            }
+        }
+
+        return redirect()->back()->with('success', 'Receipt settings updated successfully!');
+    }
 }

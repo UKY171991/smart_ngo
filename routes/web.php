@@ -112,4 +112,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/settings/mail', [App\Http\Controllers\Admin\SettingController::class, 'updateMailSettings'])->name('settings.mail.update');
     Route::get('/settings/certificate', [App\Http\Controllers\Admin\SettingController::class, 'certificateSettings'])->name('settings.certificate');
     Route::post('/settings/certificate', [App\Http\Controllers\Admin\SettingController::class, 'updateCertificateSettings'])->name('settings.certificate.update');
+    Route::get('/settings/receipt', [App\Http\Controllers\Admin\SettingController::class, 'receiptSettings'])->name('settings.receipt');
+    Route::post('/settings/receipt', [App\Http\Controllers\Admin\SettingController::class, 'updateReceiptSettings'])->name('settings.receipt.update');
 });

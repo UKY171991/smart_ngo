@@ -343,6 +343,9 @@
             <a href="{{ route('admin.settings.certificate') }}" class="nav-link {{ Route::is('admin.settings.certificate') ? 'active' : '' }}">
                 <i class="fas fa-palette"></i> Certificate Design
             </a>
+            <a href="{{ route('admin.settings.receipt') }}" class="nav-link {{ Route::is('admin.settings.receipt') ? 'active' : '' }}">
+                <i class="fas fa-file-invoice"></i> Receipt Design
+            </a>
             <div class="nav-category">System</div>
             
             <a href="{{ route('admin.settings.index') }}" class="nav-link {{ Route::is('admin.settings.index') ? 'active' : '' }}">
