@@ -6,17 +6,18 @@
 3. ✅ Built frontend assets with `npm run build`
 4. ✅ Verified manifest.json and build assets exist
 5. ✅ Fixed `exec()` function issue - modified filesystems.php
+6. ✅ Created comprehensive `.htaccess` for URL routing
 
-## Storage Link Issue Fixed:
-**Problem**: `php artisan storage:link` fails because `exec()` is disabled on Hostinger
-**Solution**: Modified `config/filesystems.php` to use `public_path('storage')` directly
+## Final URL Fix:
+**Problem**: URLs still showing `/public/` (Method Not Allowed error)
+**Solution**: Updated root `.htaccess` with comprehensive routing rules
 
 ## Upload Instructions:
 1. Upload ALL files from your local project to Hostinger's `public_html` directory
 2. Ensure the following structure is maintained:
    ```
    public_html/
-   ├── .htaccess (root - newly created)
+   ├── .htaccess (root - FINAL VERSION with routing fix)
    ├── app/
    ├── bootstrap/
    ├── config/
@@ -50,10 +51,16 @@
 - Added Hostinger-specific asset handling
 - Ensured Vite manifest is accessible at correct path
 - **Fixed storage link issue by bypassing symbolic link requirement**
+- **Fixed URL routing to remove `/public/` from URLs**
+
+## Final URLs After Fix:
+- ✅ Main: `https://seagreen-tapir-774884.hostingersite.com`
+- ✅ Admin: `https://seagreen-tapir-774884.hostingersite.com/admin/dashboard`
+- ✅ Donate: `https://seagreen-tapir-774884.hostingersite.com/donate`
 
 ## No More Storage Link Command Needed:
 - ❌ `php artisan storage:link` (NOT needed anymore)
 - ✅ Files will be stored directly in `public/storage`
 - ✅ No `exec()` function required
 
-The ViteManifestNotFoundException should now be resolved!
+**The Method Not Allowed error should now be completely resolved!**
