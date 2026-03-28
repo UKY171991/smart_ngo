@@ -274,21 +274,23 @@
     <!-- Sidebar -->
     <div id="sidebar">
         <div class="sidebar-header d-flex align-items-center justify-content-center py-4 bg-transparent">
-            @if(isset($siteSettings['logo']))
-                @php
-                    $logoUrl = $siteSettings['logo'];
-                    if ($logoUrl && !filter_var($logoUrl, FILTER_VALIDATE_URL)) {
-                        $logoUrl = Storage::url($logoUrl);
-                    }
-                @endphp
-                <img src="{{ $logoUrl }}" alt="Logo" style="max-height: 40px;" class="me-2">
-            @else
-                <i class="fas fa-hand-holding-heart me-2 text-primary fa-lg"></i>
-            @endif
-            <h5 class="mb-0 fw-bold admin-logo">{{ $siteSettings['ngo_name'] ?? 'NGO PANEL' }}</h5>
+            <a href="{{ route('admin.dashboard') }}" class="d-flex align-items-center text-decoration-none">
+                @if(isset($siteSettings['logo']))
+                    @php
+                        $logoUrl = $siteSettings['logo'];
+                        if ($logoUrl && !filter_var($logoUrl, FILTER_VALIDATE_URL)) {
+                            $logoUrl = Storage::url($logoUrl);
+                        }
+                    @endphp
+                    <img src="{{ $logoUrl }}" alt="Logo" style="max-height: 40px;" class="me-2">
+                @else
+                    <i class="fas fa-hand-holding-heart me-2 text-primary fa-lg"></i>
+                @endif
+                <h5 class="mb-0 fw-bold admin-logo">{{ $siteSettings['ngo_name'] ?? 'NGO PANEL' }}</h5>
+            </a>
         </div>
         
-        <div class="mt-4">
+        <div class="">
             <a href="{{ route('admin.dashboard') }}" class="nav-link {{ Route::is('admin.dashboard') ? 'active' : '' }}">
                 <i class="fas fa-th-large"></i> Dashboard
             </a>
