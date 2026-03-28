@@ -40,7 +40,7 @@ return [
 
         'public' => [
             'driver' => 'local',
-            'root' => base_path('public/media'),
+            'root' => base_path('media'),
             'url' => '/media',
             'visibility' => 'public',
             'throw' => false,
