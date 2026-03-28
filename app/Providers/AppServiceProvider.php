@@ -19,22 +19,33 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Dynamic Vite Manifest Detection (FOOLPROOF FIX FOR LAYOUT)
+        // Dynamic Vite Manifest Detection (ACTUALLY FOOLPROOF FIX)
         $this->app->bind(\Illuminate\Foundation\Vite::class, function ($app) {
             $vite = new \Illuminate\Foundation\Vite;
             
-            // On Hostinger, pathing might vary — find the correct manifest file
-            $paths = [
+            // On Hostinger, pathing might vary — check all possible locations
+            $manifests = [
                 public_path('build/manifest.json'),
+                public_path('build/.vite/manifest.json'),
                 base_path('public/build/manifest.json'),
-                base_path('build/manifest.json'),
+                base_path('build/manifest.json'),         // If build is in root
+                base_path('manifest.json'),                // If manifest is in root
             ];
 
-            foreach ($paths as $path) {
+            foreach ($manifests as $path) {
                 if (file_exists($path)) {
-                    // Correctly map the path relative to your web root
                     if (str_contains($path, 'public/build')) {
-                        return $vite->useManifestFilename('manifest.json');
+                        return $vite->useBuildDirectory('build')->useManifestFilename('manifest.json');
+                    }
+                    if (str_contains($path, 'public/build/.vite')) {
+                        return $vite->useBuildDirectory('build')->useManifestFilename('.vite/manifest.json');
+                    }
+                    if ($path === base_path('build/manifest.json')) {
+                        // If it's in the root build folder, we need to go up from public/
+                        return $vite->useBuildDirectory('../build')->useManifestFilename('manifest.json');
+                    }
+                    if ($path === base_path('manifest.json')) {
+                        return $vite->useBuildDirectory('../')->useManifestFilename('manifest.json');
                     }
                 }
             }
