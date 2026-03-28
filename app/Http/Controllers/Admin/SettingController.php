@@ -58,7 +58,7 @@ class SettingController extends Controller
                 $oldPath = $oldFavicon->value;
                 if (filter_var($oldPath, FILTER_VALIDATE_URL)) {
                     $oldPath = (string) \parse_url($oldPath, PHP_URL_PATH);
-                    $oldPath = \str_replace(['/storage/', '/uploads/', '/media/'], '', $oldPath);
+                    $oldPath = \str_replace(['/storage/', '/uploads/', '/media/', '/images/'], '', $oldPath);
                 }
                 if (Storage::disk('public')->exists($oldPath)) {
                     Storage::disk('public')->delete($oldPath);
