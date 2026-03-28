@@ -251,6 +251,13 @@
         </nav>
 
         <main class="py-0">
+            @if(session('success'))
+                <div class="container py-3">
+                    <div class="alert alert-success border-0 shadow-sm mb-0">
+                        <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+                    </div>
+                </div>
+            @endif
             @yield('content')
         </main>
 
