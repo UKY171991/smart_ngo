@@ -5,6 +5,11 @@
 2. ✅ Updated `public/.htaccess` with Hostinger-specific rules
 3. ✅ Built frontend assets with `npm run build`
 4. ✅ Verified manifest.json and build assets exist
+5. ✅ Fixed `exec()` function issue - modified filesystems.php
+
+## Storage Link Issue Fixed:
+**Problem**: `php artisan storage:link` fails because `exec()` is disabled on Hostinger
+**Solution**: Modified `config/filesystems.php` to use `public_path('storage')` directly
 
 ## Upload Instructions:
 1. Upload ALL files from your local project to Hostinger's `public_html` directory
@@ -23,6 +28,8 @@
    │   │   └── assets/
    │   │       ├── app-BO1y5sXO.js
    │   │       └── app-CNY1i59y.css
+   │   ├── storage/ (created - no symbolic link needed)
+   │   │   └── .htaccess (security)
    │   ├── index.php
    │   └── ...
    ├── storage/
@@ -42,5 +49,11 @@
 - Removed incorrect rewrite rule that was duplicating `/public/` in URLs
 - Added Hostinger-specific asset handling
 - Ensured Vite manifest is accessible at correct path
+- **Fixed storage link issue by bypassing symbolic link requirement**
+
+## No More Storage Link Command Needed:
+- ❌ `php artisan storage:link` (NOT needed anymore)
+- ✅ Files will be stored directly in `public/storage`
+- ✅ No `exec()` function required
 
 The ViteManifestNotFoundException should now be resolved!
