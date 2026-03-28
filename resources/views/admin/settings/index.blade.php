@@ -34,9 +34,9 @@ document.addEventListener('DOMContentLoaded', function() {
                                     $logoUrl = Storage::url($logoUrl);
                                 }
                             @endphp
-                            <img src="{{ $logoUrl ?? 'https://via.placeholder.com/150x50?text=Logo' }}" alt="Logo" class="img-fluid border p-2 rounded bg-light" style="max-height: 80px;">
+                            <img id="logo-preview" src="{{ $logoUrl ?? 'https://via.placeholder.com/150x50?text=Logo' }}" alt="Logo" class="img-fluid border p-2 rounded bg-light" style="max-height: 80px;">
                         </div>
-                        <input type="file" name="logo" class="form-control w-50 mx-auto mb-3">
+                        <input type="file" name="logo" class="form-control w-50 mx-auto mb-3" onchange="previewImage(this, 'logo-preview')">
                         @error('logo')
                             <small class="text-danger d-block mb-2">{{ $message }}</small>
                         @enderror
@@ -52,14 +52,26 @@ document.addEventListener('DOMContentLoaded', function() {
                                     $faviconUrl = Storage::url($faviconUrl);
                                 }
                             @endphp
-                            <img src="{{ $faviconUrl ?? asset('favicon.ico') }}" alt="Favicon" class="img-fluid border p-2 rounded bg-light" style="max-height: 32px;">
+                            <img id="favicon-preview" src="{{ $faviconUrl ?? asset('favicon.ico') }}" alt="Favicon" class="img-fluid border p-2 rounded bg-light" style="max-height: 32px;">
                         </div>
-                        <input type="file" name="favicon" class="form-control w-50 mx-auto mb-3" accept=".ico,.png,.jpg,.jpeg">
+                        <input type="file" name="favicon" class="form-control w-50 mx-auto mb-3" accept=".ico,.png,.jpg,.jpeg" onchange="previewImage(this, 'favicon-preview')">
                         @error('favicon')
                             <small class="text-danger d-block mb-2">{{ $message }}</small>
                         @enderror
                         <small class="text-muted d-block">Recommended size: 32x32 pixels. ICO, PNG, JPG formats accepted.</small>
                     </div>
+
+                    <script>
+                        function previewImage(input, previewId) {
+                            if (input.files && input.files[0]) {
+                                var reader = new FileReader();
+                                reader.onload = function(e) {
+                                    document.getElementById(previewId).src = e.target.result;
+                                }
+                                reader.readAsDataURL(input.files[0]);
+                            }
+                        }
+                    </script>
 
                     <div class="row g-3 mb-4">
                         <div class="col-md-6">
