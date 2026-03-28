@@ -14,10 +14,12 @@ if (file_exists($maintenance = __DIR__.'/storage/framework/maintenance.php')) {
 require __DIR__.'/vendor/autoload.php';
 
 // Bootstrap Laravel and handle the request...
+use Illuminate\Http\Request;
+
 /** @var \Illuminate\Foundation\Application $app */
 $app = require __DIR__.'/bootstrap/app.php';
 
-// Force the public path to be the current root directory (EXPLICIT FIX FOR LAYOUT)
+// Force the public path to be the current project directory (EXPLICIT FIX FOR LAYOUT)
 $app->usePublicPath(__DIR__);
 
-$app->handleRequest();
+$app->handleRequest(Request::capture());
