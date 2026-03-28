@@ -1,13 +1,19 @@
-# Redirect to public folder
-RewriteEngine on
+Options +FollowSymLinks
+RewriteEngine On
+
+# Force redirect to public folder
 RewriteCond %{REQUEST_URI} !^/public/
 RewriteRule ^(.*)$ public/$1 [L]
 
-# Handle requests in public folder
-RewriteCond %{REQUEST_URI} ^/public/
-RewriteRule ^public/(.*)$ public/index.php [L,QSA]
-
-# Handle direct requests
+# Handle requests inside public folder
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ public/index.php [L,QSA]
+RewriteRule ^public/(.*)$ public/index.php [L]
+
+# Direct file access
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^(.*)$ public/$1 [L]
+
+# Direct directory access
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^(.*)$ public/$1 [L]
