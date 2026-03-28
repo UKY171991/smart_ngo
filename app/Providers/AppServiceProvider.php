@@ -11,8 +11,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Force the public path to be the project root for Hostinger root deployment
-        $this->app->instance('path.public', base_path());
+        //
     }
 
     /**
@@ -20,11 +19,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Fix Vite manifest path for root-level deployment (Crucial for Hostinger Layout)
-        $this->app->bind(\Illuminate\Foundation\Vite::class, function ($app) {
-            return (new \Illuminate\Foundation\Vite)->useManifestFilename('build/manifest.json');
-        });
-
         // Load settings from database
         try {
             if (\Illuminate\Support\Facades\Schema::hasTable('settings')) {
