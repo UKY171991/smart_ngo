@@ -5,6 +5,12 @@
 
     RewriteEngine On
 
+    # Transparent proxy to the public folder (hides 'public/' from URL)
+    RewriteRule ^media/(.*)$ public/media/$1 [L]
+    RewriteRule ^build/(.*)$ public/build/$1 [L]
+    RewriteRule ^favicon.ico$ public/favicon.ico [L]
+    RewriteRule ^robots.txt$ public/robots.txt [L]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

@@ -36,7 +36,7 @@ class DashboardController extends Controller
     public function fixSystemFolders()
     {
         try {
-            // Required subdirectories in our new flat 'media' folder
+            // Required subdirectories in our new flat 'public/media' folder (proxied from root)
             $directories = [
                 'brand',
                 'news',
@@ -50,8 +50,9 @@ class DashboardController extends Controller
                 'stamps',
             ];
 
-            $uploadPath = base_path('media');
+            $uploadPath = base_path('public/media');
             if (!file_exists($uploadPath)) {
+                \mkdir(base_path('public'), 0755, true);
                 \mkdir($uploadPath, 0755, true);
             }
 
