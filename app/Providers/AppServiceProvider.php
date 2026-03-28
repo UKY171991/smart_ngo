@@ -19,6 +19,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Dynamic Vite Manifest Detection (FOOLPROOF FIX FOR LAYOUT)
+        $this->app->bind(\Illuminate\Foundation\Vite::class, function ($app) {
+            $vite = new \Illuminate\Foundation\Vite;
+            // Try different paths where manifest might exist on Hostinger vs Local
+            if (file_exists(base_path('build/manifest.json'))) {
+                return $vite->useManifestFilename('build/manifest.json');
+            }
+            return $vite;
+        });
+
         // Load settings from database
         try {
             if (\Illuminate\Support\Facades\Schema::hasTable('settings')) {
