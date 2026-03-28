@@ -5,7 +5,9 @@
 
     RewriteEngine On
 
-    # Proxy root assets from public/ as a failover
+    # Transparent proxy to the public folder (EXPLICIT FOR HOSTINGER)
+    RewriteRule ^media/(.*)$ public/media/$1 [L]
+    RewriteRule ^build/(.*)$ public/build/$1 [L]
     RewriteRule ^favicon.ico$ public/favicon.ico [L]
     RewriteRule ^robots.txt$ public/robots.txt [L]
 
