@@ -20,17 +20,27 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Dynamic Vite Manifest Detection (FOOLPROOF FIX FOR LAYOUT)
-        // Only apply special logic for Hostinger (Live) to avoid breaking Local
-        if (!$this->app->isLocal()) {
-            $this->app->bind(\Illuminate\Foundation\Vite::class, function ($app) {
-                $vite = new \Illuminate\Foundation\Vite;
-                // If the design files were moved to the root, point Vite there
-                if (file_exists(base_path('build/manifest.json'))) {
-                    return $vite->useManifestFilename('manifest.json');
+        $this->app->bind(\Illuminate\Foundation\Vite::class, function ($app) {
+            $vite = new \Illuminate\Foundation\Vite;
+            
+            // On Hostinger, pathing might vary — find the correct manifest file
+            $paths = [
+                public_path('build/manifest.json'),
+                base_path('public/build/manifest.json'),
+                base_path('build/manifest.json'),
+            ];
+
+            foreach ($paths as $path) {
+                if (file_exists($path)) {
+                    // Correctly map the path relative to your web root
+                    if (str_contains($path, 'public/build')) {
+                        return $vite->useManifestFilename('manifest.json');
+                    }
                 }
-                return $vite;
-            });
-        }
+            }
+            
+            return $vite;
+        });
 
         // Load settings from database
         try {
