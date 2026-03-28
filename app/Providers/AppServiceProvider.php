@@ -11,16 +11,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
-    }
+        // Fix for Hostinger — explicitly point to the public directory
+        if (str_contains(base_path(), 'public_html')) {
+            $this->app->usePublicPath(base_path('public'));
+        }
 
-    /**
-     * Bootstrap any application services.
-     */
-    public function boot(): void
-    {
         // Super-Robust Vite Manifest Locator for Hostinger/Shared Hosting
-        $this->app->bind(\Illuminate\Foundation\Vite::class, function ($app) {
+        $this->app->singleton(\Illuminate\Foundation\Vite::class, function ($app) {
             $vite = new \Illuminate\Foundation\Vite;
             
             // Priority list of manifest locations (Vite 4, Vite 5+, and root overrides)
@@ -45,7 +42,6 @@ class AppServiceProvider extends ServiceProvider
                     // 2. Detect Root Build Folder (Relative to public/ which is typical on Hostinger)
                     if (str_contains($path, DIRECTORY_SEPARATOR . 'build' . DIRECTORY_SEPARATOR)) {
                         $filename = str_contains($path, '.vite') ? '.vite/manifest.json' : 'manifest.json';
-                        // If we are in public/index.php, root build is ../build
                         return $vite->useBuildDirectory('../build')->useManifestFilename($filename);
                     }
 
@@ -58,7 +54,13 @@ class AppServiceProvider extends ServiceProvider
             
             return $vite;
         });
+    }
 
+    /**
+     * Bootstrap any application services.
+     */
+    public function boot(): void
+    {
         // Load settings from database
         try {
             if (\Illuminate\Support\Facades\Schema::hasTable('settings')) {
