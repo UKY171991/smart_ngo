@@ -13,7 +13,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // Fix for Hostinger — explicitly point to the public directory
         if (str_contains(base_path(), 'public_html')) {
-            $this->app->usePublicPath(base_path('public'));
+            app()->usePublicPath(base_path('public'));
         }
 
         // Super-Robust Vite Manifest Locator for Hostinger/Shared Hosting
