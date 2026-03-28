@@ -36,7 +36,7 @@ class DashboardController extends Controller
     public function fixSystemFolders()
     {
         try {
-            // Required subdirectories in the storage public folder
+            // Required subdirectories in our new flat 'uploads' folder
             $directories = [
                 'brand',
                 'news',
@@ -46,54 +46,34 @@ class DashboardController extends Controller
                 'qr_codes',
                 'certificates',
                 'donations',
+                'signatures',
+                'stamps',
             ];
 
+            $uploadPath = base_path('uploads');
+            if (!file_exists($uploadPath)) {
+                \mkdir($uploadPath, 0755, true);
+            }
+
             foreach ($directories as $dir) {
-                $absoluteDir = storage_path('app/public/' . $dir);
+                $absoluteDir = $uploadPath . '/' . $dir;
                 if (!file_exists($absoluteDir)) {
-                    mkdir($absoluteDir, 0755, true);
+                    \mkdir($absoluteDir, 0755, true);
                 }
                 // Ensure permissions
                 if (PHP_OS_FAMILY !== 'Windows') {
-                    chmod($absoluteDir, 0755);
+                    @\chmod($absoluteDir, 0755);
                 }
             }
 
-            $storagePublic = storage_path('app/public');
-            if (PHP_OS_FAMILY !== 'Windows') {
-                 chmod($storagePublic, 0755);
+            // Still attempt storage:link for anything else that might use it, but ignore failure
+            try {
+                \Illuminate\Support\Facades\Artisan::call('storage:link');
+            } catch (\Exception $e) {
+                // Silently skip if it fails on shared hosting
             }
 
-            $publicPath = public_path('storage');
-
-            // Force recreate symlink if broken or directory
-            if (file_exists($publicPath) || is_link($publicPath)) {
-                if (PHP_OS_FAMILY === 'Windows') {
-                    if (is_dir($publicPath) && !is_link($publicPath)) {
-                        shell_exec("rd /s /q \"$publicPath\"");
-                    } else {
-                        shell_exec("del /f /q \"$publicPath\"");
-                    }
-                } else {
-                    shell_exec("rm -rf \"$publicPath\"");
-                }
-            }
-
-            // Run artisan storage link
-            \Illuminate\Support\Facades\Artisan::call('storage:link');
-
-            // If still not working (shared hosting issue), attempt manual link
-            if (!file_exists($publicPath)) {
-                $target = storage_path('app/public');
-                $link = public_path('storage');
-                if (PHP_OS_FAMILY === 'Windows') {
-                    shell_exec("mklink /J \"$link\" \"$target\"");
-                } else {
-                    @symlink($target, $link);
-                }
-            }
-
-            return back()->with('success', 'System folders verified and storage link recreated.');
+            return back()->with('success', 'System folders verified in the uploads directory.');
         } catch (\Exception $e) {
             return back()->with('error', 'System fix failed: ' . $e->getMessage());
         }
