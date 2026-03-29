@@ -20,7 +20,7 @@
                             <div class="form-check d-flex align-items-center justify-content-between">
                                 <label class="form-check-label w-100 cursor-pointer d-flex align-items-center" for="phonepe">
                                     <div class="bg-purple p-2 rounded-3 me-3">
-                                        <img src="https://img.icons8.com/color/48/phone-pe.png" width="32" alt="PhonePe">
+                                        <i class="fas fa-mobile-alt text-purple fa-lg" style="font-size: 32px;"></i>
                                     </div>
                                     <div>
                                         <h6 class="fw-bold mb-0">PhonePe</h6>
@@ -36,7 +36,7 @@
                             <div class="form-check d-flex align-items-center justify-content-between">
                                 <label class="form-check-label w-100 cursor-pointer d-flex align-items-center" for="razorpay">
                                     <div class="bg-blue p-2 rounded-3 me-3">
-                                        <img src="https://img.icons8.com/color/48/razorpay.png" width="32" alt="Razorpay">
+                                        <i class="fas fa-credit-card text-primary fa-lg" style="font-size: 32px;"></i>
                                     </div>
                                     <div>
                                         <h6 class="fw-bold mb-0">Razorpay</h6>
@@ -52,7 +52,7 @@
                             <div class="form-check d-flex align-items-center justify-content-between">
                                 <label class="form-check-label w-100 cursor-pointer d-flex align-items-center" for="payu">
                                     <div class="bg-green p-2 rounded-3 me-3">
-                                        <img src="https://img.icons8.com/external-flat-icons-inmotus-design/67/external-Payment-payment-flat-icons-inmotus-design.png" width="32" alt="PayU">
+                                        <i class="fas fa-wallet text-success fa-lg" style="font-size: 32px;"></i>
                                     </div>
                                     <div>
                                         <h6 class="fw-bold mb-0">PayU Money</h6>
@@ -88,6 +88,7 @@
 <style>
     .cursor-pointer { cursor: pointer; }
     .bg-purple { background-color: #f3e8ff; }
+    .text-purple { color: #9333ea; }
     .bg-blue { background-color: #e0f2fe; }
     .bg-green { background-color: #f0fdf4; }
     .hover-border-primary:hover { border-color: #0d6efd !important; }
