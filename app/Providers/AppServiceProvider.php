@@ -19,6 +19,36 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Fix Vite manifest path for Hostinger shared hosting
+        $this->app->bind(\Illuminate\Foundation\Vite::class, function ($app) {
+            return new class extends \Illuminate\Foundation\Vite {
+                protected function manifestPath($buildDirectory)
+                {
+                    // Standard path
+                    $path = public_path($buildDirectory . '/manifest.json');
+                    
+                    if (file_exists($path)) {
+                        return $path;
+                    }
+
+                    // Alternative path (if public_path is misconfigured or in a subdirectory)
+                    $altPaths = [
+                        base_path('public/build/manifest.json'),
+                        base_path('../public_html/build/manifest.json'),
+                        base_path('public_html/build/manifest.json'),
+                    ];
+
+                    foreach ($altPaths as $altPath) {
+                        if (file_exists($altPath)) {
+                            return $altPath;
+                        }
+                    }
+
+                    return $path;
+                }
+            };
+        });
+
         // Load settings from database
         try {
             if (\Illuminate\Support\Facades\Schema::hasTable('settings')) {
