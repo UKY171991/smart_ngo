@@ -11,7 +11,7 @@
 
     <!-- Favicon -->
     @if(isset($siteSettings['favicon']))
-        <link rel="icon" type="image/x-icon" href="{{ filter_var($siteSettings['favicon'], FILTER_VALIDATE_URL) ? $siteSettings['favicon'] : Storage::url($siteSettings['favicon']) }}">
+        <link rel="icon" type="image/x-icon" href="{{ filter_var($siteSettings['favicon'], FILTER_VALIDATE_URL) ? $siteSettings['favicon'] : asset('storage/' . $siteSettings['favicon']) }}">
     @else
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     @endif
@@ -182,7 +182,7 @@
             <div class="container">
                 <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
                     @if(isset($siteSettings['logo']))
-                        <img src="{{ filter_var($siteSettings['logo'], FILTER_VALIDATE_URL) ? $siteSettings['logo'] : Storage::url($siteSettings['logo']) }}" alt="Logo" style="max-height: 40px;" class="me-2">
+                        <img src="{{ filter_var($siteSettings['logo'], FILTER_VALIDATE_URL) ? $siteSettings['logo'] : asset('storage/' . $siteSettings['logo']) }}" alt="Logo" style="max-height: 40px;" class="me-2">
                     @else
                         <i class="fas fa-heart text-primary me-2"></i>
                     @endif

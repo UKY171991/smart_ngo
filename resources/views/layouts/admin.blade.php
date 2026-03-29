@@ -14,13 +14,7 @@
     
     <!-- Favicon -->
     @if(isset($siteSettings['favicon']))
-        @php
-            $favUrl = $siteSettings['favicon'];
-            if ($favUrl && !filter_var($favUrl, FILTER_VALIDATE_URL)) {
-                $favUrl = Storage::url($favUrl);
-            }
-        @endphp
-        <link rel="icon" type="image/x-icon" href="{{ $favUrl }}">
+        <link rel="icon" type="image/x-icon" href="{{ filter_var($siteSettings['favicon'], FILTER_VALIDATE_URL) ? $siteSettings['favicon'] : asset('storage/' . $siteSettings['favicon']) }}">
     @else
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     @endif
@@ -274,18 +268,14 @@
     <!-- Sidebar -->
     <div id="sidebar">
         <div class="sidebar-header d-flex align-items-center justify-content-center py-4 bg-transparent">
-            @if(isset($siteSettings['logo']))
-                @php
-                    $logoUrl = $siteSettings['logo'];
-                    if ($logoUrl && !filter_var($logoUrl, FILTER_VALIDATE_URL)) {
-                        $logoUrl = Storage::url($logoUrl);
-                    }
-                @endphp
-                <img src="{{ $logoUrl }}" alt="Logo" style="max-height: 40px;" class="me-2">
-            @else
-                <i class="fas fa-hand-holding-heart me-2 text-primary fa-lg"></i>
-            @endif
-            <h5 class="mb-0 fw-bold admin-logo">{{ $siteSettings['ngo_name'] ?? 'NGO PANEL' }}</h5>
+            <a href="{{ route('admin.dashboard') }}" class="d-flex align-items-center text-decoration-none">
+                @if(isset($siteSettings['logo']))
+                    <img src="{{ filter_var($siteSettings['logo'], FILTER_VALIDATE_URL) ? $siteSettings['logo'] : asset('storage/' . $siteSettings['logo']) }}" alt="Logo" style="max-height: 40px;" class="me-2">
+                @else
+                    <i class="fas fa-hand-holding-heart me-2 text-primary fa-lg"></i>
+                @endif
+                <h5 class="mb-0 fw-bold admin-logo">{{ $siteSettings['ngo_name'] ?? 'NGO PANEL' }}</h5>
+            </a>
         </div>
         
         <div class="mt-4">
