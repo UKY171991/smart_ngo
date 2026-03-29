@@ -11,49 +11,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Fix for Hostinger — explicitly point to the public directory
-        if (str_contains(base_path(), 'public_html')) {
-            app()->usePublicPath(base_path('public'));
-        }
-
-        // Super-Robust Vite Manifest Locator for Hostinger/Shared Hosting
-        $this->app->singleton(\Illuminate\Foundation\Vite::class, function ($app) {
-            $vite = new \Illuminate\Foundation\Vite;
-            
-            // Priority list of manifest locations (Vite 4, Vite 5+, and root overrides)
-            $manifests = [
-                public_path('build/manifest.json'),
-                public_path('build/.vite/manifest.json'),
-                base_path('public/build/manifest.json'),
-                base_path('public/build/.vite/manifest.json'),
-                base_path('build/manifest.json'),
-                base_path('build/.vite/manifest.json'),
-                base_path('manifest.json'),
-            ];
-
-            foreach ($manifests as $path) {
-                if (file_exists($path)) {
-                    // 1. Detect Standard Public Subfolder
-                    if (str_contains($path, 'public/build')) {
-                        $filename = str_contains($path, '.vite') ? '.vite/manifest.json' : 'manifest.json';
-                        return $vite->useBuildDirectory('build')->useManifestFilename($filename);
-                    }
-                    
-                    // 2. Detect Root Build Folder (Relative to public/ which is typical on Hostinger)
-                    if (str_contains($path, DIRECTORY_SEPARATOR . 'build' . DIRECTORY_SEPARATOR)) {
-                        $filename = str_contains($path, '.vite') ? '.vite/manifest.json' : 'manifest.json';
-                        return $vite->useBuildDirectory('../build')->useManifestFilename($filename);
-                    }
-
-                    // 3. Root Manifest File directly
-                    if (basename($path) === 'manifest.json') {
-                         return $vite->useBuildDirectory('../')->useManifestFilename('manifest.json');
-                    }
-                }
-            }
-            
-            return $vite;
-        });
+        //
     }
 
     /**

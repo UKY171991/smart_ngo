@@ -45,8 +45,7 @@ class DonationController extends Controller
 
         if ($request->payment_method === 'online') {
             // Redirect to payment gateway selection
-            return redirect()->route('donations.payment', $donation->id)
-                ->with('success', 'Donation details submitted successfully! Please complete your payment.');
+            return redirect()->route('donations.payment', $donation->id);
         }
 
         return redirect()->route('home')->with('success', 'Thank you for your donation! A receipt has been sent to your email.');

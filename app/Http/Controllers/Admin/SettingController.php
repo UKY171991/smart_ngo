@@ -18,8 +18,8 @@ class SettingController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5120', // Increased to 5MB for flexibility
-            'favicon' => 'nullable|file|mimes:ico,png,jpg,jpeg|max:1024',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'favicon' => 'nullable|file|mimes:ico,png,jpg,jpeg|max:512',
         ]);
 
         $data = $request->except(['_token', 'logo', 'favicon']);
@@ -32,22 +32,17 @@ class SettingController extends Controller
             // Delete old logo
             $oldLogo = Setting::where('setting_key', 'logo')->first();
             if ($oldLogo && $oldLogo->value) {
+                // If it's a full URL, attempt to extract relative path
                 $oldPath = $oldLogo->value;
                 if (filter_var($oldPath, FILTER_VALIDATE_URL)) {
-                    $oldPath = (string) \parse_url($oldPath, PHP_URL_PATH);
-                    $oldPath = \str_replace(['/storage/', '/uploads/', '/media/'], '', $oldPath);
+                    $oldPath = parse_url($oldPath, PHP_URL_PATH);
+                    $oldPath = str_replace('/storage/', '', $oldPath);
                 }
                 if (Storage::disk('public')->exists($oldPath)) {
                     Storage::disk('public')->delete($oldPath);
                 }
             }
-            
             $path = $request->file('logo')->store('brand', 'public');
-            
-            if (!$path || !Storage::disk('public')->exists($path)) {
-                return redirect()->back()->with('error', 'Server Error: Failed to save logo. Please check folder permissions.');
-            }
-
             Setting::updateOrCreate(['setting_key' => 'logo'], ['value' => $path]);
         }
 
@@ -57,20 +52,14 @@ class SettingController extends Controller
             if ($oldFavicon && $oldFavicon->value) {
                 $oldPath = $oldFavicon->value;
                 if (filter_var($oldPath, FILTER_VALIDATE_URL)) {
-                    $oldPath = (string) \parse_url($oldPath, PHP_URL_PATH);
-                    $oldPath = \str_replace(['/storage/', '/uploads/', '/media/', '/images/'], '', $oldPath);
+                    $oldPath = parse_url($oldPath, PHP_URL_PATH);
+                    $oldPath = str_replace('/storage/', '', $oldPath);
                 }
                 if (Storage::disk('public')->exists($oldPath)) {
                     Storage::disk('public')->delete($oldPath);
                 }
             }
-            
             $path = $request->file('favicon')->store('brand', 'public');
-
-            if (!$path || !Storage::disk('public')->exists($path)) {
-                return redirect()->back()->with('error', 'Server Error: Failed to save favicon. Please check folder permissions.');
-            }
-
             Setting::updateOrCreate(['setting_key' => 'favicon'], ['value' => $path]);
         }
 
