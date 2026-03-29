@@ -102,19 +102,11 @@
                     </div>
                     <div class="col-lg-4">
                         <div class="row g-2">
-                            <div class="col-6 col-lg-12">
+                            <div class="col-12">
                                 <form action="{{ route('admin.clear-cache') }}" method="POST" class="w-100">
                                     @csrf
                                     <button type="submit" class="btn btn-warning btn-fancy w-100 rounded-pill fw-bold shadow-sm py-2">
                                         <i class="fas fa-broom me-2"></i> Cache
-                                    </button>
-                                </form>
-                            </div>
-                            <div class="col-6 col-lg-12">
-                                <form action="{{ route('admin.fix-folders') }}" method="POST" class="w-100">
-                                    @csrf
-                                    <button type="submit" class="btn btn-dark btn-fancy w-100 rounded-pill fw-bold shadow-sm py-2">
-                                        <i class="fas fa-folder-plus me-2"></i> Fix
                                     </button>
                                 </form>
                             </div>
